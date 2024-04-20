@@ -7,6 +7,7 @@ import User from "../database/models/user.model";
 import ImageModel from "../database/models/image.model";
 import { redirect } from "next/navigation";
 import { v2 as cloudinary } from 'cloudinary';
+import MovieCollection from "../database/models/movieCollection.model";
 
 const populateUser = (query: any) => query.populate({
     path: 'author',
@@ -181,3 +182,24 @@ export async function getUserImages({
       handleError(error);
     }
   }
+
+
+
+
+  //Get Movie Collection
+export async function getMovieCollectionByUserId(userId: string) {
+    try {
+        await connectToDatabase();
+
+        //const image = await populateUser(ImageModel.findById(imageId));
+        const newMovieCollection = await MovieCollection.findOne({clerkId: userId});
+
+        if (!newMovieCollection) {
+            throw new Error("Collection not found");
+        }
+
+        return JSON.parse(JSON.stringify(newMovieCollection));
+    } catch (error) {
+        handleError(error)
+    }
+}

@@ -1,15 +1,27 @@
-"use client";
-
 import Header from '@/components/shared/Header'
 import Sidebar from '@/components/shared/Sidebar'
-import { usePathname } from 'next/navigation';
+import { getMovieCollectionByUserId } from '@/lib/actions/movieCollection.actions';
+import { MovieInterface } from '@/lib/database/models/movieCollection.model';
+import { auth } from '@clerk/nextjs';
+import { redirect, usePathname } from 'next/navigation';
 import React from 'react'
 
-const Discover = () => {
-  const pathname = usePathname();
+const Discover = async () => {
+  //const pathname = usePathname();
+  const { userId } = auth();
+
+  if (!userId) redirect("/sign-in");
+
+  const movieCollection = await getMovieCollectionByUserId(userId);
+
   return (
     <>
-    {pathname}
+    abcd
+    {
+      movieCollection.movies.map((movie : MovieInterface) => {
+        return movie.title
+      })
+    }
     </>
     
   )
