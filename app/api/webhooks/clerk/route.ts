@@ -6,6 +6,8 @@ import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 
 import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
+import MovieCollection from "@/lib/database/models/movieCollection.model";
+import { createMovieCollectionByUserId } from "@/lib/actions/movieCollection.actions";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -81,7 +83,9 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json({ message: "OK", user: newUser });
+    const newMovieCollection = await createMovieCollectionByUserId(newUser._id);
+
+    return NextResponse.json({ message: "OK", user: newUser, MovieCollection: newMovieCollection });
   }
 
   // UPDATE

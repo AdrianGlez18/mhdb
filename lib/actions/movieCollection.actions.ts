@@ -157,45 +157,66 @@ export async function getUserImages({
     limit = 9,
     page = 1,
     userId,
-  }: {
+}: {
     limit?: number;
     page: number;
     userId: string;
-  }) {
+}) {
     try {
-      await connectToDatabase();
-  
-      const skipAmount = (Number(page) - 1) * limit;
-  
-      const images = await populateUser(ImageModel.find({ author: userId }))
-        .sort({ updatedAt: -1 })
-        .skip(skipAmount)
-        .limit(limit);
-  
-      const totalImages = await ImageModel.find({ author: userId }).countDocuments();
-  
-      return {
-        data: JSON.parse(JSON.stringify(images)),
-        totalPages: Math.ceil(totalImages / limit),
-      };
+        await connectToDatabase();
+
+        const skipAmount = (Number(page) - 1) * limit;
+
+        const images = await populateUser(ImageModel.find({ author: userId }))
+            .sort({ updatedAt: -1 })
+            .skip(skipAmount)
+            .limit(limit);
+
+        const totalImages = await ImageModel.find({ author: userId }).countDocuments();
+
+        return {
+            data: JSON.parse(JSON.stringify(images)),
+            totalPages: Math.ceil(totalImages / limit),
+        };
     } catch (error) {
-      handleError(error);
+        handleError(error);
     }
-  }
+}
 
 
 
 
-  //Get Movie Collection
+//Get Movie Collection
 export async function getMovieCollectionByUserId(userId: string) {
     try {
         await connectToDatabase();
 
         //const image = await populateUser(ImageModel.findById(imageId));
-        const newMovieCollection = await MovieCollection.findOne({clerkId: userId});
+        const newMovieCollection = await MovieCollection.findOne({ clerkId: userId });
 
         if (!newMovieCollection) {
             throw new Error("Collection not found");
+        }
+
+        return JSON.parse(JSON.stringify(newMovieCollection));
+    } catch (error) {
+        handleError(error)
+    }
+}
+
+
+export async function createMovieCollectionByUserId(userId: string) {
+    try {
+        await connectToDatabase();
+
+        // Generates empty collections to fill
+        const newMovieCollection = await MovieCollection.create({
+            clerkId: userId,
+            movies: []
+        })
+
+        if (!newMovieCollection) {
+            throw new Error("Collection not created");
         }
 
         return JSON.parse(JSON.stringify(newMovieCollection));
