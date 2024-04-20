@@ -33,12 +33,12 @@ export interface MovieCollectionInterface extends Document {
 const MovieSchema = new Schema({
   tmdbId: {
     type: String,
-    required: true,
-    unique: true,
+    //required: true,
+    //unique: true,
   },
   title: {
     type: String,
-    required: true,
+    //required: true,
   },
   rating: {
     type: Number,

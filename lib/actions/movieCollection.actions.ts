@@ -208,6 +208,7 @@ export async function getMovieCollectionByUserId(userId: string) {
 export async function createMovieCollectionByUserId(userId: string) {
     try {
         await connectToDatabase();
+        console.log("New movie created")
 
         // Generates empty collections to fill
         const newMovieCollection = await MovieCollection.create({

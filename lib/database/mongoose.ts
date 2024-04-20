@@ -16,7 +16,9 @@ if(!cached) {
 }
 
 export const connectToDatabase = async () => {
-    if(cached.conn) return cached.conn;
+    //if(cached.conn) return cached.conn;
+
+    console.log("conectinmg to db.........................")
 
     if(!MONGODB_URL) throw new Error("Missing connection utl");
 
