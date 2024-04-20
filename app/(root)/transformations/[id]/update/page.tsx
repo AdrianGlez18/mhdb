@@ -20,7 +20,7 @@ const Page = async ({ params: { id } }: SearchParamProps) => {
 
   return (
     <>
-      <Header title={transformation.title} subtitle={transformation.subTitle} />
+      <Header/>
 
       <section className="mt-10">
         <TransformationForm
