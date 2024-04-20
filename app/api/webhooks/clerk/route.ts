@@ -83,7 +83,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const newMovieCollection = await createMovieCollectionByUserId(user.clerkId);
+    const newMovieCollection = await createMovieCollectionByUserId("testing");
 
     return NextResponse.json({ message: "OK", user: newUser, MovieCollection: newMovieCollection });
   }
