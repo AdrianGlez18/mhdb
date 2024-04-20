@@ -14,7 +14,11 @@ export async function createUser(user: CreateUserParams) {
 
     const newUser = await User.create(user);
 
-    // Generates empty collections to populate
+    console.log("QAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+    console.log(newUser);
+
+    // Generates empty collections to fill
     const newMovieCollection = await MovieCollection.create({
       clerkId: user.clerkId,
       movies: []

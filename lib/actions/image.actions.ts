@@ -108,7 +108,7 @@ export async function getAllImages({ limit = 9, page = 1, searchQuery = '' }: {
             secure: true
         })
 
-        let expression = 'folder=mediatools';
+        let expression = 'folder=mhdb';
 
         if (searchQuery && searchQuery !== '') {
             expression += ` AND ${searchQuery}`

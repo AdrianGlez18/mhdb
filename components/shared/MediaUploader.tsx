@@ -46,7 +46,7 @@ const MediaUploader = ({
 
   return (
     <CldUploadWidget
-      uploadPreset="mediatools"
+      uploadPreset="mhdb"
       options={{
         multiple: false,
         resourceType: "image"
