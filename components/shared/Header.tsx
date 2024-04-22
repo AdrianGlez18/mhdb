@@ -48,7 +48,7 @@ const Header = (/* { title, subtitle }: { title: string, subtitle?: string } */)
       <div className='flex'>
         <LangButton />
         <ThemeButton />
-        <div className="flex-center cursor-pointer gap-2 p-4">
+        <div className="flex-center cursor-pointer gap-2 mx-4">
           <UserButton afterSignOutUrl='/' />
         </div>
       </div>

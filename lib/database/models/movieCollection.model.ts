@@ -3,7 +3,7 @@ import { model, models, Schema, Document } from "mongoose";
 
 
 export interface MovieInterface extends Document {
-  _id: string;
+  //_id: string;
   tmdbId: string;
   title: string;
   rating: 0 | 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5 | undefined;
@@ -17,8 +17,8 @@ export interface MovieInterface extends Document {
     "plan to watch": boolean;
     "plan to buy": boolean;
   }
-  createdAt: Date;
-  updatedAt: Date;
+  //createdAt: Date;
+  //updatedAt: Date;
 }
 
 export interface MovieCollectionInterface extends Document {
@@ -30,7 +30,7 @@ export interface MovieCollectionInterface extends Document {
 }
 
 
-const MovieSchema = new Schema({
+export const MovieSchema = new Schema({
   tmdbId: {
     type: String,
     //required: true,

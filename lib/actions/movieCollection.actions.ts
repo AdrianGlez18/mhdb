@@ -7,7 +7,7 @@ import User from "../database/models/user.model";
 import ImageModel from "../database/models/image.model";
 import { redirect } from "next/navigation";
 import { v2 as cloudinary } from 'cloudinary';
-import MovieCollection from "../database/models/movieCollection.model";
+import MovieCollection, { MovieInterface } from "../database/models/movieCollection.model";
 
 const populateUser = (query: any) => query.populate({
     path: 'author',
@@ -15,29 +15,7 @@ const populateUser = (query: any) => query.populate({
     select: '_id firstName lastName clerkId'
 })
 
-//Add image to db
-export async function addImage({ image, userId, path }: AddImageParams) {
-    try {
-        await connectToDatabase();
 
-        const author = await User.findById(userId);
-
-        if (!author) {
-            throw new Error("User not found");
-        }
-
-        const newImage = await ImageModel.create({
-            ...image,
-            author: author._id
-        })
-
-        revalidatePath(path);
-
-        return JSON.parse(JSON.stringify(newImage));
-    } catch (error) {
-        handleError(error)
-    }
-}
 
 //Update image 
 export async function updateImage({ image, userId, path }: UpdateImageParams) {
@@ -221,6 +199,127 @@ export async function createMovieCollectionByUserId(userId: string) {
         }
 
         return JSON.parse(JSON.stringify(newMovieCollection));
+    } catch (error) {
+        handleError(error)
+    }
+}
+
+//Add movie to db
+export async function addMovieToCollection( userId: string, movie : any) {
+    try {
+        await connectToDatabase();
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+        /* console.log(movie);
+
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+
+        console.log(userId)
+
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################") */
+
+        /* const updatedCollection = await MovieCollection.findOneAndUpdate({ clerkId: userId }, {
+            "$push": {
+                "movies": { movie }
+            }
+        }, {
+            new: true,
+        }); */
+
+        const collection = await MovieCollection.findOne({ clerkId: userId });
+
+        if (!collection) {
+            throw new Error("Collection not found");
+        }
+
+        /* console.log(collection.movies)
+        console.log(collection)
+
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################") */
+
+        collection.movies.push(movie);
+
+        /* console.log(collection)
+
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################")
+        console.log("###############################################") */
+
+        const updatedCollection = await MovieCollection.findOneAndReplace({ clerkId: userId }, collection);
+
+        //revalidatePath(path);
+
+        return JSON.parse(JSON.stringify(updatedCollection));
+    } catch (error) {
+        handleError(error)
+    }
+}
+
+//Add movie to db
+export async function addMovieToWishlist( userId: string, movie : any) {
+    try {
+        await connectToDatabase();
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+        const collection = await MovieCollection.findOne({ clerkId: userId });
+
+        if (!collection) {
+            throw new Error("Collection not found");
+        }
+
+        collection.movies.push(movie);
+
+        const updatedCollection = await MovieCollection.findOneAndReplace({ clerkId: userId }, collection);
+
+        return JSON.parse(JSON.stringify(updatedCollection));
+    } catch (error) {
+        handleError(error)
+    }
+}
+
+
+//Delete movie from db
+export async function deleteMovieFromCollection( userId: string, movieId : string) {
+    try {
+        await connectToDatabase();
+
+        if (!userId) {
+            throw new Error("User not found");
+        }
+
+        const collection = await MovieCollection.findOne({ clerkId: userId });
+
+        if (!collection) {
+            throw new Error("Collection not found");
+        }
+
+        collection.movies = collection.movies.filter((e: any) => e.tmdbId !== movieId);
+
+        const updatedCollection = await MovieCollection.findOneAndReplace({ clerkId: userId }, collection);
+
+        //revalidatePath(path);
+
+        return JSON.parse(JSON.stringify(updatedCollection));
     } catch (error) {
         handleError(error)
     }
