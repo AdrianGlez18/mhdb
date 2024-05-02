@@ -144,3 +144,12 @@ declare type CreateUserParams = {
     image: any;
     type: string;
   }
+
+/*   declare type collectionElementDetailsParams = {
+    img: string,
+    title: string,
+    rating: string,
+    isWatching: boolean,
+    isOwned: boolean,
+    is
+  } */

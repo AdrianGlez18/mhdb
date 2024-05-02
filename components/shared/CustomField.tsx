@@ -9,7 +9,7 @@ import {
   FormLabel,
 } from "../ui/form";
 
-import { formSchema } from "./TransformationForm";
+import { formSchema } from "./AddMovieForm";
 
 type CustomFieldProps = {
   control: Control<z.infer<typeof formSchema>> | undefined;

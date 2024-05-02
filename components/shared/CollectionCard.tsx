@@ -1,11 +1,16 @@
-import { Button } from '../ui/button'
+import translations from '@/data/translations.json'
 import Link from 'next/link'
-import { checkIfWishlisted } from '@/lib/validations'
+import { checkIfWishlisted, getTranslation } from '@/lib/validations'
 import { addMovieToWishlist } from '@/lib/actions/movieCollection.actions'
 import { useToast } from '../ui/use-toast'
-import AddMovieToWishlistButton from './AddMovieButton copy'
+import AddMovieToWishlistButton from './AddMovieToWishlistButton'
+import { useRecoilState } from 'recoil'
+import { localeState } from '@/lib/translations/recoilStates'
+import { useState } from 'react'
 
 const CollectionCard = async ({ id, img, title, rank, userId }: { id: string, img: string, title: string, rank: string, userId: string }) => {
+    /* const [lang, setLang] = useRecoilState(localeState); */
+    //const [lang, setLang] = useState('English')
     const newMovie = {
         tmdbId: id,
         title: title,
@@ -13,45 +18,15 @@ const CollectionCard = async ({ id, img, title, rank, userId }: { id: string, im
         imageUrl: img,
         categories: [],
         comments: '',
-        flags: {
-            "watched": true,
-            "own": false,
-            "watching": false,
-            "plan to watch": true,
-            "plan to buy": false
-        }
+        isWatching: false,
+        isWatched: false,
+        isWishlisted: true,
+        isFavorited: false,
+        isOwned: false,
     }
-    
-    const addToWishlist = async () => {
-        const isWishlisted = checkIfWishlisted(userId, id);
-        const { toast } = useToast();
 
-        console.log("called")
-
-
-
-        if (!isWishlisted) {
-
-
-            const result = await addMovieToWishlist(userId, newMovie);
-
-            toast({
-                title: 'Added successfully',
-                description: 'Movie added to wishlist',
-                duration: 5000,
-                className: 'success-toast'
-            })
-        } else {
-            toast({
-                title: 'Already wishlisted',
-                description: 'Movie already in your wishlist',
-                duration: 5000,
-                className: 'success-toast'
-            })
-        }
-    }
     return (
-        <div className="py-3 w-full bg-gray-300 dark:bg-dark-700 border-white rounded-xl flex flex-col gap-2 items-center text-center">
+        <div className="py-3 w-full bg-gray-300 dark:bg-dark-700 border-white rounded-xl flex flex-col gap-2 items-center text-center justify-between">
             <div className="grid grid-cols-6 w-full">
                 <div className="col-span-5">
                     <h2 className="text-3xl font-bold">{title}</h2>
@@ -69,13 +44,13 @@ const CollectionCard = async ({ id, img, title, rank, userId }: { id: string, im
             <div className="flex gap-3 items-center">
                 <Link href={`/discover/movies/${id}/add`} className="card-button w-full bg-green-300 p-3" title='Add to collection'>
                     <img src="/assets/icons/add-list.png" alt="Add to collection" aria-label='Add to collection' height={20} width={20} />
-                  
+
                 </Link>
                 <Link href={`/discover/movies/${id}`} className="card-button w-full bg-green-300 p-3" title='View Details'>
-                  <img src="/assets/icons/view-details.png" alt="View details" aria-label='View Details' height={20} width={20} />
-                   
+                    <img src="/assets/icons/view-details.png" alt="View details" aria-label='View Details' height={20} width={20} />
+
                 </Link>
-                <AddMovieToWishlistButton newMovie={newMovie} userId={userId}/>
+                <AddMovieToWishlistButton newMovie={newMovie} userId={userId} />
             </div>
 
 

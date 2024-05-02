@@ -1,6 +1,7 @@
 "use client"
 
 import CollectionContent from "@/components/shared/CollectionContent";
+import TabHeader from "@/components/shared/TabHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { tabsIcons } from "@/constants";
 import { auth } from "@clerk/nextjs";
@@ -15,7 +16,10 @@ const Discover = () => {
   const [page, setPage] = useState(1);
 
   return (
-    <p>Movies</p>
+    <>
+    <TabHeader />
+    <p>Books</p>
+    </>
   )
 }
 

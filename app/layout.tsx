@@ -4,8 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/shared/Theme-provider";
-import Header from "@/components/shared/Header";
-import MobileNav from "@/components/shared/MobileNav";
+import { RecoilRoot } from 'recoil'
 
 const IBM = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -27,20 +26,22 @@ export default function RootLayout({
     <ClerkProvider appearance={{
       variables: { colorPrimary: '#9f7aea' }
     }}>
-      <html lang="en">
-        <body className={cn("font-IBMPlex antialiased root", IBM.variable)}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* <Header />
+      {/* <RecoilRoot> */}
+        <html lang="en">
+          <body className={cn("font-IBMPlex antialiased root", IBM.variable)}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {/* <Header />
             <MobileNav /> */}
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
+              {children}
+            </ThemeProvider>
+          </body>
+        </html>
+      {/* </RecoilRoot> */}
     </ClerkProvider>
   );
 }

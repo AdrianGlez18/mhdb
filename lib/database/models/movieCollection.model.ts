@@ -2,12 +2,12 @@ import { model, models, Schema, Document } from "mongoose";
 
 
 
-export interface MovieInterface extends Document {
+/* export interface MovieInterface extends Document {
   //_id: string;
   tmdbId: string;
   title: string;
-  rating: 0 | 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5 | undefined;
-  imageUrl: String;
+  rating: number;
+  imageUrl: string;
   categories: string[];
   comments: string;
   flags: {
@@ -19,7 +19,84 @@ export interface MovieInterface extends Document {
   }
   //createdAt: Date;
   //updatedAt: Date;
+} */
+
+export interface MovieInterface extends Document {
+  //_id: string;
+  tmdbId: string;
+  imageUrl: string,
+  title: string,
+  rating: string,
+  isWatching: boolean,
+  isWatched: boolean,
+  isWishlisted: boolean,
+  isFavorited: boolean,
+  isOwned: boolean,
+  categories: string[];
+  comments: string;
+  cost: number;
+  currency: string;
+  format: string;
+  //createdAt: Date;
+  //updatedAt: Date;
 }
+
+export const MovieSchema = new Schema({
+  tmdbId: {
+    type: String,
+    required: true,
+    //unique: true,
+  },
+  imageUrl: {
+    type: String,
+  },
+  title: {
+    type: String,
+    //required: true,
+  },
+  rating: {
+    type: Number,
+    default: undefined,
+  },
+  isWatching: {
+    type: Boolean
+  },
+  isWatched: {
+    type: Boolean
+  },
+  isWishlisted: {
+    type: Boolean
+  },
+  isFavorited: {
+    type: Boolean
+  },
+  isOwned: {
+    type: Boolean
+  },
+  categories: [{
+    type: String,
+  }],
+  comments: {
+    type: String,
+  },
+  cost: {
+    type: Number,
+  },
+  currency: {
+    type: String,
+  },
+  format: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
 export interface MovieCollectionInterface extends Document {
   _id: string;
@@ -30,7 +107,7 @@ export interface MovieCollectionInterface extends Document {
 }
 
 
-export const MovieSchema = new Schema({
+/* export const MovieSchema = new Schema({
   tmdbId: {
     type: String,
     //required: true,
@@ -70,7 +147,7 @@ export const MovieSchema = new Schema({
     type: Date,
     default: Date.now
   }
-});
+}); */
 
 
 const MovieCollectionSchema = new Schema({

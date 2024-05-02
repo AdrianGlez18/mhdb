@@ -1,21 +1,28 @@
-"use client"
-
 import CollectionContent from "@/components/shared/CollectionContent";
+import TabHeader from "@/components/shared/TabHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { tabsIcons } from "@/constants";
+import { getMovieCollectionByUserId } from "@/lib/actions/movieCollection.actions";
 import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 
-const Discover = () => {
+const Discover = async () => {
 
-  //const { userId } = auth();
+  const { userId } = auth();
+  if (!userId) redirect("/sign-in");
 
   const TMDB_API_KEY = process.env.TMDB_API_KEY;
-  const [page, setPage] = useState(1);
+  //const [page, setPage] = useState(1);
+  const collection = await getMovieCollectionByUserId(userId);
+  console.log("API Called")
 
   return (
-    <p>Movies</p>
+    <>
+      <CollectionContent typeOfCollection="movies" collection={collection} userId={userId} />
+    </>
+
   )
 }
 

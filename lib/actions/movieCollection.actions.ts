@@ -252,7 +252,11 @@ export async function addMovieToCollection( userId: string, movie : any) {
         console.log("###############################################")
         console.log("###############################################") */
 
-        collection.movies.push(movie);
+        if(collection.movies.some((element: any) => element.tmdbId === movie.tmdbId)) {
+            return -1;
+        } else {
+            collection.movies.push(movie);
+        }
 
         /* console.log(collection)
 

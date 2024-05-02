@@ -132,7 +132,7 @@ export const download = (url: string, filename: string) => {
 
 // DEEP MERGE OBJECTS
 export const deepMergeObjects = (obj1: any, obj2: any) => {
-  if(obj2 === null || obj2 === undefined) {
+  if (obj2 === null || obj2 === undefined) {
     return obj1;
   }
 
@@ -155,3 +155,44 @@ export const deepMergeObjects = (obj1: any, obj2: any) => {
 
   return output;
 };
+
+export const getTMDBList = async (type: string, searchQuery: string, page: number) => {
+  //TODO Add labguage support
+  const TMDB_API_KEY = process.env.TMDB_API_KEY;
+  const newQuery: string = searchQuery.trim().replace('', '+');
+
+  if (type === 'movies') {
+
+    if (searchQuery === '') {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=en-US&page=${page.toString()}`,
+        { next: { revalidate: 10000 } }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      return data;//.results.filter((movie: any) => movie.media_type === 'movie');
+
+    } else {
+      console.log(`https://api.themoviedb.org/3/search/movie?query=${newQuery}&api_key=${TMDB_API_KEY}&language=en-US&page=${page.toString()}`)
+      const res = await fetch(
+        
+        `https://api.themoviedb.org/3/search/movie?query=${newQuery}&api_key=${TMDB_API_KEY}&language=en-US&page=${page.toString()}`,
+        { next: { revalidate: 10000 } }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      return data;//.results.filter((movie: any) => movie.media_type === 'movie');
+
+    }
+
+  }
+
+  return []
+
+}
