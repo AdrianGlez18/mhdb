@@ -24,11 +24,9 @@ const LongCard = ({ element, filter }: { element: MovieInterface, filter: string
                 <div className="flex justify-around items-center p-2 w-full">
                 <Link href={`/discover/movies/${element.tmdbId}/add`} className="card-button bg-green-300 p-3" title='Add to collection'>
                     <img src="/assets/icons/add-list.png" alt="Add to collection" aria-label='Add to collection' height={20} width={20} />
-
                 </Link>
                 <Link href={`/discover/movies/${element.tmdbId}`} className="card-button  bg-green-300 p-3" title='View Details'>
                     <img src="/assets/icons/view-details.png" alt="View details" aria-label='View Details' height={20} width={20} />
-
                 </Link>
                 </div>
             </div>

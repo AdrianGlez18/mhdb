@@ -13,7 +13,7 @@ import { formUrlQuery } from '@/lib/utils';
 import { Button } from '../ui/button';
 import { Search } from './Search';
 
-const SearchResults = async ({ movies, totalPages, page, userId }: any) => {
+const SearchResults = async ({ movies, totalPages, page, userId, contentType }: { movies: any, totalPages: number, page: number, userId: string, contentType: string }) => {
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -52,12 +52,17 @@ const SearchResults = async ({ movies, totalPages, page, userId }: any) => {
     let rating = '0';
     return (
         <>
-        <Search /> 
+        <Search contentType={contentType} /> 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 max-w-6xl mx-auto py-4 overflow-x-hidden content-center justify-center">
             {
                 movies.map((movie: any) => {
+                  console.log(movie.title)
+                  console.log(movie.name)
                     id = movie.id.toString();
                     title = movie.title;
+                    if (typeof movie.title === "undefined") {
+                      title = movie.name;
+                    }
                     rating = (Math.round(movie.vote_average * 10) / 10).toString()
 
                         return (

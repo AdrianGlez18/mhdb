@@ -4,8 +4,6 @@ import { type ClassValue, clsx } from "clsx";
 import qs from "qs";
 import { twMerge } from "tailwind-merge";
 
-import { aspectRatioOptions } from "@/constants";
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -93,22 +91,6 @@ export const debounce = (func: (...args: any[]) => void, delay: number) => {
   };
 };
 
-// GE IMAGE SIZE
-export type AspectRatioKey = keyof typeof aspectRatioOptions;
-export const getImageSize = (
-  type: string,
-  image: any,
-  dimension: "width" | "height"
-): number => {
-  if (type === "fill") {
-    return (
-      aspectRatioOptions[image.aspectRatio as AspectRatioKey]?.[dimension] ||
-      1000
-    );
-  }
-  return image?.[dimension] || 1000;
-};
-
 // DOWNLOAD IMAGE
 export const download = (url: string, filename: string) => {
   if (!url) {
@@ -161,7 +143,7 @@ export const getTMDBList = async (type: string, searchQuery: string, page: numbe
   const TMDB_API_KEY = process.env.TMDB_API_KEY;
   const newQuery: string = searchQuery.trim().replace('', '+');
 
-  if (type === 'movies') {
+  if (type === 'movies' || type === "series") {
 
     if (searchQuery === '') {
       const res = await fetch(
@@ -173,13 +155,13 @@ export const getTMDBList = async (type: string, searchQuery: string, page: numbe
         throw new Error('Failed to fetch data');
       }
 
-      return data;//.results.filter((movie: any) => movie.media_type === 'movie');
+      return data;
 
     } else {
-      console.log(`https://api.themoviedb.org/3/search/movie?query=${newQuery}&api_key=${TMDB_API_KEY}&language=en-US&page=${page.toString()}`)
+      const fetchUrlParam = type === "movies" ? "movie" : "tv";
       const res = await fetch(
         
-        `https://api.themoviedb.org/3/search/movie?query=${newQuery}&api_key=${TMDB_API_KEY}&language=en-US&page=${page.toString()}`,
+        `https://api.themoviedb.org/3/search/${fetchUrlParam}?query=${newQuery}&api_key=${TMDB_API_KEY}&language=en-US&page=${page.toString()}`,
         { next: { revalidate: 10000 } }
       );
       const data = await res.json();
@@ -187,7 +169,7 @@ export const getTMDBList = async (type: string, searchQuery: string, page: numbe
         throw new Error('Failed to fetch data');
       }
 
-      return data;//.results.filter((movie: any) => movie.media_type === 'movie');
+      return data;
 
     }
 
