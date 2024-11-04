@@ -56,7 +56,7 @@ const CollectionContent = ({ typeOfCollection, collection, userId }: any) => {
       <div className="grid lg:grid-cols-2 gap-4 my-5">
         {
           currentCollection.slice((page - 1) * elementsPerPage, page * elementsPerPage).map((movie: any) => {
-            return <LongCard element={movie} filter={filter} currentCollection={currentCollection} setCurrentCollection={setCurrentCollection} userId={userId}/>
+            return <LongCard element={movie} key={movie.tmdbId} filter={filter} currentCollection={currentCollection} setCurrentCollection={setCurrentCollection} userId={userId}/>
           })
         }
       </div>

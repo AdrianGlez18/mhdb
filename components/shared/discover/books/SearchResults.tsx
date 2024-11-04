@@ -45,7 +45,8 @@ const SearchResults = async ({ movies, totalPages, page, userId, contentType }: 
           if (typeof item.volumeInfo.imageLinks !== 'undefined') {
             return (
               <DiscoverCard 
-              userId={userId!} 
+              userId={userId!}
+              key={item.id}
               id={item.id} 
               title={item.volumeInfo.title + ' ' + item.volumeInfo.subtitle} 
               img={item.volumeInfo.imageLinks.thumbnail} 

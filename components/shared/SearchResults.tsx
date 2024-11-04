@@ -66,7 +66,7 @@ const SearchResults = async ({ movies, totalPages, page, userId, contentType }: 
                     rating = (Math.round(movie.vote_average * 10) / 10).toString()
 
                         return (
-                            <DiscoverCard userId={userId!} id={id} title={title} img={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`} rank={rating} contentType={contentType}/>
+                            <DiscoverCard userId={userId!} key={id} id={id} title={title} img={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`} rank={rating} contentType={contentType}/>
                         )
 
                 })
