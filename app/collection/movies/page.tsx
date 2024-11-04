@@ -1,5 +1,4 @@
 import CollectionContent from "@/components/shared/CollectionContent";
-import TabHeader from "@/components/shared/TabHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { tabsIcons } from "@/constants";
 import { getMovieCollectionByUserId } from "@/lib/actions/movieCollection.actions";
@@ -20,7 +19,7 @@ const Discover = async () => {
 
   return (
     <>
-      <CollectionContent typeOfCollection="movies" collection={collection} userId={userId} />
+      <CollectionContent typeOfCollection="movies" collection={collection.movies} userId={userId} />
     </>
 
   )

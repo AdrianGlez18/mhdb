@@ -1,9 +1,3 @@
-import Header from '@/components/shared/Header'
-import Sidebar from '@/components/shared/Sidebar'
-import { getMovieCollectionByUserId } from '@/lib/actions/movieCollection.actions';
-import { MovieInterface } from '@/lib/database/models/movieCollection.model';
-import { auth } from '@clerk/nextjs';
-
 const Discover = async () => {
   //const pathname = usePathname();
   //const { userId } = auth();

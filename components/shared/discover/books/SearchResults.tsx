@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import DiscoverCard from './discover/DiscoverCard';
+import DiscoverCard from './DiscoverCard';
 import {
     Pagination,
     PaginationContent,
@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/pagination";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { formUrlQuery } from '@/lib/utils';
-import { Button } from '../ui/button';
-import { Search } from './Search';
+import { Button } from '../../../ui/button';
+import { Search } from '../../Search';
 
 const SearchResults = async ({ movies, totalPages, page, userId, contentType }: { movies: any, totalPages: number, page: number, userId: string, contentType: string }) => {
 
@@ -32,46 +32,37 @@ const SearchResults = async ({ movies, totalPages, page, userId, contentType }: 
         router.push(newUrl, { scroll: false });
       };
 
-    /* if (movies.length == 0) {
-        const TMDB_API_KEY = process.env.TMDB_API_KEY;
-
-        const res = await fetch(
-            `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=en-US&page=1`,
-            { next: { revalidate: 10000 } }
-        );
-        const data = await res.json();
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-        //const movies = data.results.filter((movie: any) => movie.media_type === 'movie');
-        setMovies(data.results.filter((movie: any) => movie.media_type === 'movie'))
-    }
- */
     let id: string = '';
     let title: string = '';
     let rating = '0';
     return (
         <>
         <Search contentType={contentType} /> 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 max-w-6xl mx-auto py-4 overflow-x-hidden content-center justify-center">
-            {
-                movies.map((movie: any) => {
-                  console.log(movie.title)
-                  console.log(movie.name)
-                    id = movie.id.toString();
-                    title = movie.title;
-                    if (typeof movie.title === "undefined") {
-                      title = movie.name;
-                    }
-                    rating = (Math.round(movie.vote_average * 10) / 10).toString()
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-8 w-full">
+      {
+       movies.map((item: any) => {
+          console.log(item.volumeInfo.imageLinks)
+          if (typeof item.volumeInfo.imageLinks !== 'undefined') {
+            return (
+              <DiscoverCard 
+              userId={userId!} 
+              id={item.id} 
+              title={item.volumeInfo.title + ' ' + item.volumeInfo.subtitle} 
+              img={item.volumeInfo.imageLinks.thumbnail} 
+              rank={rating} 
+              contentType={"book"}/>
+              
+            )
+            {/* <div className='col-span-1'>
+                
+                <img src={item.volumeInfo.imageLinks.thumbnail} width={200} height={300} />
+                <p>{item.volumeInfo.title}</p>
+              </div> */}
+          }
 
-                        return (
-                            <DiscoverCard userId={userId!} id={id} title={title} img={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`} rank={rating} contentType={contentType}/>
-                        )
-
-                })
-            }
-        </div>
+        })
+      }
+      </div> 
         {totalPages > 1 && (
             <Pagination className="my-10">
               <PaginationContent className="flex w-full">

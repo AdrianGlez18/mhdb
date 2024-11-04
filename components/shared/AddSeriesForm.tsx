@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input"
 import { creditFee, defaultValues, movieFormatOptions } from "@/constants"
 import { CustomField } from "./CustomField"
 import { useEffect, useState, useTransition } from "react"
+//import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils"
 import MediaUploader from "./MediaUploader"
 import TransformedImage from "./TransformedImage"
 import { updateCredits } from "@/lib/actions/user.actions"
@@ -37,14 +38,15 @@ import { CheckboxInput } from "./CheckBoxInput"
 import { CheckBoxCustomField } from "./CheckBoxCustomField"
 import Rating from "./Rating"
 import CalendarInput from "./CalendarInput"
-import { addMovieToCollection } from "@/lib/actions/movieCollection.actions"
+import { addSeriesToCollection, createSeriesCollectionByUserId } from "@/lib/actions/seriesCollection.actions"
 import { toast } from "../ui/use-toast"
+import { createMovieCollectionByUserId } from "@/lib/actions/movieCollection.actions"
 
 export const formSchema = z.object({
   title: z.string(),
-  aspectRatio: z.string().optional(),
-  color: z.string().optional(),
-  prompt: z.string().optional(),
+  //aspectRatio: z.string().optional(),
+  //color: z.string().optional(),
+  //prompt: z.string().optional(),
   publicId: z.string(),
   rating: z.string().optional(),
   cost: z.string().optional(),
@@ -56,11 +58,12 @@ export const formSchema = z.object({
   isFavorited: z.boolean(),
   timesWatched: z.string().optional(),
   whenWasWatched: z.date().optional(), //z.array(z.date().optional()),
-  comments: z.string().optional()
+  comments: z.string().optional(),
+  categories: z.string().optional()
 })
 
-//const AddMovieForm = ({ action, data = null, userId, type, creditBalance, config = null }: TransformationFormProps) => {
-const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }: any) => {
+//const AddSeriesForm = ({ action, data = null, userId, type, creditBalance, config = null }: TransformationFormProps) => {
+const AddSeriesForm = ({ action, data = null, userId, seriesId, seriesImg, series }: any) => {
   //const transformationType = transformationTypes[type];
   //const [image, setImage] = useState(data)
   //const [timesWatchedState, settimesWatchedState] = useState([<div>A</div>])
@@ -75,9 +78,9 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
 
   const initialValues = data && action === 'Update' ? {
     title: data?.title,
-    aspectRatio: data?.aspectRatio,
-    color: data?.color,
-    prompt: data?.prompt,
+    //aspectRatio: data?.aspectRatio,
+    //color: data?.color,
+    //prompt: data?.prompt,
     publicId: data?.publicId,
     rating: data?.rating,
     cost: data?.cost,
@@ -89,7 +92,8 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
     isFavorited: data?.isFavorited,
     timesWatched: data?.timesWatched,
     whenWasWatched: data?.whenWasWatched,
-    comments: data?.comments
+    comments: data?.comments,
+    categories: data?.categories.join(',')
   } : defaultValues
 
   // 1. Define your form.
@@ -103,43 +107,44 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
     setIsSubmitting(true);
     values.rating = rating;
 
-    const newMovie = {
-      tmdbId: movieId,
-      imageUrl: movieImg,
-      title: movie.title,
+    const currentCategories: string[] = typeof (values.categories) === 'string' ? values.categories.split(',') : [];
+
+    const newSeries = {
+      tmdbId: seriesId,
+      imageUrl: seriesImg,
+      title: series.name,
       rating: values.rating,
       isWatching: values.isWatching,
       isWatched: values.isWatched,
       isWishlisted: false,
       isFavorited: values.isFavorited,
       isOwned: values.isOwned,
-      categories: ["a", "b"],
       comments: values.comments,
       cost: values.cost,
       currency: values.currency,
-      format: values.format
+      format: values.format,
+      categories: currentCategories
     }
-
-    const result = await addMovieToCollection(userId, newMovie);
+    const result = await addSeriesToCollection(userId, newSeries);
     console.log(result);
 
-    if (result == -1) { //Movie already in db
+    if (result == -1) { //Series already in db
       toast({
         title: 'Already listed',
-        description: 'Movie already in your collection',
+        description: 'Series already in your collection',
         duration: 5000,
         className: 'success-toast'
       })
     } else {
       toast({
         title: 'Added successfully',
-        description: 'Movie added to collection',
+        description: 'Series added to collection',
         duration: 5000,
         className: 'success-toast'
       })
     }
     setTimeout(() => {
-      router.push("/collection/movies")
+      router.push("/collection/series")
     }, 1000);
     setIsSubmitting(false)
   }
@@ -149,7 +154,7 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 my-4">
         {/* {creditBalance < Math.abs(creditFee) && <InsufficientCreditsModal />} */} {/* TODO opción de mostrar un mensaje pidiendo apoyo cada 15-20 solicitudes */}
-        <h2 className="h2-bold text-center">Movie Status</h2>
+        <h2 className="h2-bold text-center">Series Status</h2>
 
         <div className="grid w-full gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 items-center content-center text-center justify-center">
           <CheckBoxCustomField
@@ -302,6 +307,14 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
           render={({ field }) => <Input {...field} className="input-field" />}
         />
 
+        <CustomField
+          control={form.control}
+          name="categories"
+          formLabel="categories"
+          className="w-full"
+          render={({ field }) => <Input {...field} className="input-field" />}
+        />
+
 
         <div className="flex flex-col gap-4">
           <Button
@@ -318,4 +331,4 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
   )
 }
 
-export default AddMovieForm
+export default AddSeriesForm

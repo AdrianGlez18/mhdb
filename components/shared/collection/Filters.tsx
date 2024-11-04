@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { movieFilters } from "@/constants"
+import { bookFilters, movieFilters } from "@/constants"
 
 const Filters = ({typeOfFilter, value, setValue} : any) => {
   const [open, setOpen] = React.useState(false)
@@ -28,6 +28,8 @@ const Filters = ({typeOfFilter, value, setValue} : any) => {
 
   if (typeOfFilter === 'movies') {
     filters = movieFilters;
+  } else if (typeOfFilter === 'books') {
+    filters = bookFilters;
   }
 
   return (

@@ -178,3 +178,42 @@ export const getTMDBList = async (type: string, searchQuery: string, page: numbe
   return []
 
 }
+
+export const getBookList = async (searchQuery: string, page: number) => {
+  //TODO Add labguage support
+  //const TMDB_API_KEY = process.env.TMDB_API_KEY;
+  //const newQuery: string = searchQuery.trim().replace('', '+');
+
+
+    if (searchQuery === '') {
+      const res = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=1984`,
+        { next: { revalidate: 10000 } }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      return data;
+
+    } else {
+      //const fetchUrlParam = type === "movies" ? "movie" : "tv";
+      console.log("Inside else inm get book")
+      const res = await fetch(
+        
+        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}+intitle&maxResults=30`,//&maxResults=20
+        { next: { revalidate: 10000 } }
+      );
+      const data = await res.json();
+      console.log(searchQuery)
+      console.log(data.items[0])
+      if (!res.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      return data;
+
+    }
+
+}

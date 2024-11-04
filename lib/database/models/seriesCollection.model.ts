@@ -1,31 +1,11 @@
 import { model, models, Schema, Document } from "mongoose";
 
 
-
-/* export interface MovieInterface extends Document {
-  //_id: string;
-  tmdbId: string;
-  title: string;
-  rating: number;
-  imageUrl: string;
-  categories: string[];
-  comments: string;
-  flags: {
-    "watched": boolean;
-    "own": boolean;
-    "watching": boolean;
-    "plan to watch": boolean;
-    "plan to buy": boolean;
-  }
-  //createdAt: Date;
-  //updatedAt: Date;
-} */
-
 export interface SeriesInterface extends Document {
   //_id: string;
   tmdbId: string;
   imageUrl: string;
-  name: string;
+  title: string;
   rating: string;
   isWatching: boolean;
   isWatched: boolean;
@@ -166,6 +146,6 @@ const SeriesCollectionSchema = new Schema({
 })
 
 
-const SeriesCollection = models?.MovieCollection || model("MovieCollection", SeriesCollectionSchema);
+const SeriesCollection = models?.SeriesCollection || model("SeriesCollection", SeriesCollectionSchema);
 
 export default SeriesCollection;

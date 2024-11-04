@@ -1,18 +1,18 @@
-import { MovieInterface } from '@/lib/database/models/movieCollection.model';
+import { BookInterface } from '@/lib/database/models/bookCollection.model';
 import { SeriesInterface } from '@/lib/database/models/seriesCollection.model';
 import Link from 'next/link';
-import { Button } from '../ui/button';
-import { deleteMovieFromCollection } from '@/lib/actions/movieCollection.actions';
+import { Button } from '../../ui/button';
+import { deleteBookFromCollection } from '@/lib/actions/bookCollection.actions';
 
-//declare type LongCardParams = MovieInterface | null;
+//declare type BookCardParams = MovieInterface | null;
 
-const deleteMovie = (movie: MovieInterface | SeriesInterface, currentCollection: any, setCurrentCollection: any, userId: string) => {
-    deleteMovieFromCollection(userId, movie.tmdbId);
-    setCurrentCollection(currentCollection.filter((e: any) => e.tmdbId !== movie.tmdbId));
+const deleteBook = (book: BookInterface, currentCollection: any, setCurrentCollection: any, userId: string) => {
+    deleteBookFromCollection(userId, book.bookId);
+    setCurrentCollection(currentCollection.filter((e: any) => e.bookId !== book.bookId));
 }
 
-const LongCard = ({ element, filter, currentCollection, setCurrentCollection, userId }: 
-    { element: MovieInterface | SeriesInterface, filter: string, currentCollection: any, setCurrentCollection: any, userId: string }) => {
+const BookCard = ({ element, filter, currentCollection, setCurrentCollection, userId }: 
+    { element: BookInterface, filter: string, currentCollection: any, setCurrentCollection: any, userId: string }) => {
     //console.log(element)
     return (
         <div className='flex justify-between w-full rounded-3xl bg-gray-200 dark:bg-dark-700 min-h-40'>
@@ -32,17 +32,17 @@ const LongCard = ({ element, filter, currentCollection, setCurrentCollection, us
                     ) : ''
                 }
                 <div className="flex justify-around items-center p-2 w-full">
-                <Link href={`/discover/movies/${element.tmdbId}/add`} className="card-button bg-green-300 p-3" title='Add to collection'>
+                <Link href={`/discover/books/${element.bookId}/add`} className="card-button bg-green-300 p-3" title='Add to collection'>
                     <img src="/assets/icons/add-list.png" alt="Add to collection" aria-label='Add to collection' height={20} width={20} />
                 </Link>
-                <Link href={`/discover/movies/${element.tmdbId}`} className="card-button  bg-green-300 p-3" title='View Details'>
+                <Link href={`/discover/books/${element.bookId}`} className="card-button  bg-green-300 p-3" title='View Details'>
                     <img src="/assets/icons/view-details.png" alt="View details" aria-label='View Details' height={20} width={20} />
                 </Link>
-                <Button className="card-button bg-red-300 p-3" title='Remove from list' onClick={() => deleteMovie(element, currentCollection, setCurrentCollection, userId)}/>
+                <Button className="card-button bg-red-300 p-3" title='Remove from list' onClick={() => deleteBook(element, currentCollection, setCurrentCollection, userId)}/>
                 </div>
             </div>
         </div>
     )
 }
 
-export default LongCard
+export default BookCard

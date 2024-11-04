@@ -28,7 +28,7 @@ export default function RootLayout({
     }}>
       {/* <RecoilRoot> */}
         <html lang="en">
-          <body className={cn("font-IBMPlex antialiased root", IBM.variable)}>
+          <body className={cn("font-IBMPlex antialiased root overflow-x-hidden", IBM.variable)}>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"

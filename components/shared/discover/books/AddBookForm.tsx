@@ -23,74 +23,64 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { creditFee, defaultValues, movieFormatOptions } from "@/constants"
+import { bookDefaultValues, bookFormatOptions } from "@/constants"
 import { CustomField } from "./CustomField"
 import { useEffect, useState, useTransition } from "react"
-import MediaUploader from "./MediaUploader"
-import TransformedImage from "./TransformedImage"
-import { updateCredits } from "@/lib/actions/user.actions"
-import { getCldImageUrl } from "next-cloudinary"
-import { addImage, updateImage } from "@/lib/actions/image.actions"
+
 import { useRouter } from "next/navigation"
-import { InsufficientCreditsModal } from "./InsufficientCreditsModal"
-import { CheckboxInput } from "./CheckBoxInput"
+import { CheckboxInput } from "../../CheckBoxInput"
 import { CheckBoxCustomField } from "./CheckBoxCustomField"
-import Rating from "./Rating"
-import CalendarInput from "./CalendarInput"
-import { addMovieToCollection } from "@/lib/actions/movieCollection.actions"
-import { toast } from "../ui/use-toast"
+import Rating from "../../Rating"
+import CalendarInput from "../../CalendarInput"
+import { addBookToCollection, createBookCollectionByUserId } from "@/lib/actions/bookCollection.actions"
+import { toast } from "../../../ui/use-toast"
+import { time } from "console"
 
 export const formSchema = z.object({
   title: z.string(),
-  aspectRatio: z.string().optional(),
-  color: z.string().optional(),
-  prompt: z.string().optional(),
   publicId: z.string(),
   rating: z.string().optional(),
   cost: z.string().optional(),
   currency: z.string().optional(),
   format: z.string().optional(),
-  isWatched: z.boolean(),
-  isWatching: z.boolean(),
+  isRead: z.boolean(),
+  isReading: z.boolean(),
   isOwned: z.boolean(),
   isFavorited: z.boolean(),
-  timesWatched: z.string().optional(),
-  whenWasWatched: z.date().optional(), //z.array(z.date().optional()),
-  comments: z.string().optional()
+  timesRead: z.string().optional(),
+  lastStartReadingDate: z.date().optional(), //z.array(z.date().optional()),
+  lastEndReadingDate: z.date().optional(), //z.array(z.date().optional()),
+  comments: z.string().optional(),
+  tags: z.string().optional()
 })
 
-//const AddMovieForm = ({ action, data = null, userId, type, creditBalance, config = null }: TransformationFormProps) => {
-const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }: any) => {
-  //const transformationType = transformationTypes[type];
-  //const [image, setImage] = useState(data)
-  //const [timesWatchedState, settimesWatchedState] = useState([<div>A</div>])
-  //const [newTransformation, setNewTransformation] = useState<Transformations | null>(null);
+//const AddBookForm = ({ action, data = null, userId, type, creditBalance, config = null }: TransformationFormProps) => {
+const AddBookForm = ({ action, data = null, userId, bookId, book }: any) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter()
-  //const [isTransforming, setIsTransforming] = useState(false);
-  //const [transformationConfig, setTransformationConfig] = useState(config)
-  //const [isPending, startTransition] = useTransition()
-  //const router = useRouter()
   const [rating, setRating] = useState("0")
+
+  const imageUrl = book.volumeInfo.imageLinks.thumbnail;
+  const title = book.volumeInfo.title;
+  const authors = book.volumeInfo.authors;
 
   const initialValues = data && action === 'Update' ? {
     title: data?.title,
-    aspectRatio: data?.aspectRatio,
-    color: data?.color,
-    prompt: data?.prompt,
     publicId: data?.publicId,
     rating: data?.rating,
     cost: data?.cost,
     currency: data?.currency,
     format: data?.format,
-    isWatched: data?.isWatched,
-    isWatching: data?.isWatching,
+    isRead: data?.isRead,
+    isReading: data?.isReading,
     isOwned: data?.isOwned,
     isFavorited: data?.isFavorited,
-    timesWatched: data?.timesWatched,
-    whenWasWatched: data?.whenWasWatched,
-    comments: data?.comments
-  } : defaultValues
+    timesRead: data.timesRead,
+    lastStartReadingDate: data.lastStartReadingDate,
+    lastEndReadingDate: data.lastEndReadingDate,
+    comments: data?.comments,
+    tags: data?.tags.join(',')
+  } : bookDefaultValues
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -103,43 +93,50 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
     setIsSubmitting(true);
     values.rating = rating;
 
-    const newMovie = {
-      tmdbId: movieId,
-      imageUrl: movieImg,
-      title: movie.title,
+    const currenttags: string[] = typeof (values.tags) === 'string' ? values.tags.split(',') : [];
+    console.log(currenttags)
+
+    const newBook = {
+      bookId: bookId,
+      imageUrl: imageUrl,
+      title: title,
+      author: authors[0],
       rating: values.rating,
-      isWatching: values.isWatching,
-      isWatched: values.isWatched,
+      isReading: values.isReading,
+      isRead: values.isRead,
       isWishlisted: false,
       isFavorited: values.isFavorited,
       isOwned: values.isOwned,
-      categories: ["a", "b"],
+      timesRead: values.timesRead,
+      lastStartReadingDate: values.lastStartReadingDate,
+      lastEndReadingDate: values.lastEndReadingDate,
       comments: values.comments,
       cost: values.cost,
       currency: values.currency,
-      format: values.format
+      format: values.format,
+      tags: currenttags
     }
-
-    const result = await addMovieToCollection(userId, newMovie);
+    console.log("newBook:", newBook)
+    const result = await addBookToCollection(userId, newBook);
     console.log(result);
 
-    if (result == -1) { //Movie already in db
+    if (result == -1) { //Book already in db
       toast({
         title: 'Already listed',
-        description: 'Movie already in your collection',
+        description: 'Book already in your collection',
         duration: 5000,
         className: 'success-toast'
       })
     } else {
       toast({
         title: 'Added successfully',
-        description: 'Movie added to collection',
+        description: 'Book added to collection',
         duration: 5000,
         className: 'success-toast'
       })
     }
     setTimeout(() => {
-      router.push("/collection/movies")
+      router.push("/collection/books")
     }, 1000);
     setIsSubmitting(false)
   }
@@ -149,27 +146,27 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 my-4">
         {/* {creditBalance < Math.abs(creditFee) && <InsufficientCreditsModal />} */} {/* TODO opción de mostrar un mensaje pidiendo apoyo cada 15-20 solicitudes */}
-        <h2 className="h2-bold text-center">Movie Status</h2>
+        <h2 className="h2-bold text-center">Book Status</h2>
 
         <div className="grid w-full gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 items-center content-center text-center justify-center">
           <CheckBoxCustomField
             control={form.control}
-            name="isWatching"
-            formLabel="Watching"
-            htmlFor="isWatching"
+            name="isReading"
+            formLabel="Reading"
+            htmlFor="isReading"
             icon="eye.png"
             bg="bg-blue-500"
-            render={({ field }) => <CheckboxInput type="checkbox" id="isWatching" {...field} />
+            render={({ field }) => <CheckboxInput type="checkbox" id="isReading" {...field} />
             } />
 
           <CheckBoxCustomField
             control={form.control}
-            name="isWatched"
-            formLabel="Watched"
-            htmlFor="isWatched"
+            name="isRead"
+            formLabel="Read"
+            htmlFor="isRead"
             icon="done.png"
             bg="bg-yellow-500"
-            render={({ field }) => <CheckboxInput type="checkbox" id="isWatched" {...field} />
+            render={({ field }) => <CheckboxInput type="checkbox" id="isRead" {...field} />
             } />
 
           <CheckBoxCustomField
@@ -202,7 +199,7 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
                   name="cost"
                   formLabel="Cost"
                   className="w-full"
-                  render={({ field }) => <Input type="number" step="0.01" {...field} className="input-field" />}
+                  render={({ field }: any) => <Input type="number" step="0.01" {...field} className="input-field" />}
                 />
 
                 <CustomField
@@ -210,7 +207,7 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
                   name="currency"
                   formLabel="Currency"
                   className="w-full"
-                  render={({ field }) => <Input type="text" {...field} className="input-field" />}
+                  render={({ field }: any) => <Input type="text" {...field} className="input-field" />}
                 />
 
                 <CustomField
@@ -218,7 +215,7 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
                   name="format"
                   formLabel="Format"
                   className="w-full"
-                  render={({ field }) => (
+                  render={({ field }: any) => (
                     <Select
                       value={field.value}
                     >
@@ -226,7 +223,7 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
                         <SelectValue placeholder="Select format" />
                       </SelectTrigger>
                       <SelectContent>
-                        {movieFormatOptions.map((key) => (
+                        {bookFormatOptions.map((key) => (
                           <SelectItem key={key} value={key} className="select-item">
                             {key}
                           </SelectItem>
@@ -239,14 +236,14 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
             ) : ''
         }
         {
-          (form.getValues().isWatched === true || form.getValues().isFavorited === true) ? (
+          (form.getValues().isRead === true || form.getValues().isFavorited === true) ? (
             <div className="flex gap-4">
               <CustomField
                 control={form.control}
-                name="timesWatched"
-                formLabel="Times Watched"
+                name="timesRead"
+                formLabel="Times Read"
                 className="w-full"
-                render={({ field }) => <Input type="number" min={0} {...field} className="input-field" />
+                render={({ field }: any) => <Input type="number" min={0} {...field} className="input-field" />
                 }
               />
               {/**TODO Revisar */}
@@ -254,15 +251,21 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
 
               {/* <CustomField
                 control={form.control}
-                name="whenWasWatched"
+                name="lastStartReadingDate"
                 formLabel="When was watched"
                 className="w-full"
-                render={({ field }) => <Input {...field} className="input-field" />} /> */}
+                render={({ field } : any) => <Input {...field} className="input-field" />} /> */}
 
               <CalendarInput
                 control={form.control}
-                name="whenWasWatched"
-                formLabel="When was watched"
+                name="lastStartReadingDate"
+                formLabel="Started Reading"
+                formDescription="" />
+
+              <CalendarInput
+                control={form.control}
+                name="lastEndReadingDate"
+                formLabel="Finished Reading"
                 formDescription="" />
 
             </div>) : ''
@@ -276,7 +279,7 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
           name="rating"
           formLabel="Rating"
           className="w-full"
-          render={({ field }) => <Rating {...field} />}
+          render={({ field } : any) => <Rating {...field} />}
         /> */}
 
 
@@ -299,7 +302,15 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
           name="comments"
           formLabel="Comments"
           className="w-full"
-          render={({ field }) => <Input {...field} className="input-field" />}
+          render={({ field }: any) => <Input {...field} className="input-field" />}
+        />
+
+        <CustomField
+          control={form.control}
+          name="tags"
+          formLabel="Tags"
+          className="w-full"
+          render={({ field }: any) => <Input {...field} className="input-field" />}
         />
 
 
@@ -318,4 +329,4 @@ const AddMovieForm = ({ action, data = null, userId, movieId, movieImg, movie }:
   )
 }
 
-export default AddMovieForm
+export default AddBookForm

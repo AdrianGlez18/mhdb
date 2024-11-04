@@ -1,7 +1,7 @@
 "use client"
 
 import CollectionContent from "@/components/shared/CollectionContent";
-import TabHeader from "@/components/shared/TabHeader";
+import TabHeader from "@/components/shared/collection/TabHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { tabsIcons } from "@/constants";
 import { auth } from "@clerk/nextjs";
@@ -18,7 +18,7 @@ const Discover = () => {
   return (
 
     <>
-    <TabHeader />
+    {/* <TabHeader /> */}
     <p>Games</p>
     </>
 

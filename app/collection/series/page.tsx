@@ -1,29 +1,34 @@
-"use client"
-
 import CollectionContent from "@/components/shared/CollectionContent";
-import TabHeader from "@/components/shared/TabHeader";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { tabsIcons } from "@/constants";
+import { getSeriesCollectionByUserId } from "@/lib/actions/seriesCollection.actions";
 import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 
-const Discover = () => {
+const SeriesCollection = async () => {
 
   //const { userId } = auth();
 
+  const { userId } = auth();
+  if (!userId) redirect("/sign-in");
+
   const TMDB_API_KEY = process.env.TMDB_API_KEY;
-  const [page, setPage] = useState(1);
+  //const [page, setPage] = useState(1);
+  const collection = await getSeriesCollectionByUserId(userId);
+  console.log("API Called")
+  //console.log(collection.series)
 
   return (
     <>
-    <TabHeader />
-    <p>Series</p>
+    <CollectionContent typeOfCollection="series" collection={collection.series} userId={userId} />
     </>
   )
 }
 
-export default Discover
+export default SeriesCollection
 /* 
 <div className="flex flex-col align-center content-center justify-center text-center items-center">
       <h2 className='h2-bold m-8'>Your collection</h2>
@@ -42,3 +47,7 @@ export default Discover
         <TabsContent value="books" className="my-4">Change your password here.</TabsContent>
       </Tabs>
     </div> */
+
+    //Pasar la header a una sidebar
+    //DONE Usar el searchtags poniendo los elementos como parametros en la barra de busqueda
+    //Unificar todas las paginas de SeriesCollection en /discover y todas las de collection en /collection

@@ -6,12 +6,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { useEffect, useState } from 'react';
-import LongCard from './LongCard';
-import TabHeader from "./collection/TabHeader";
+import LongCard from '../LongCard';
+import TabHeader from "../collection/TabHeader";
+import BookCard from "./BookCard";
 
-const CollectionContent = ({ typeOfCollection, collection, userId }: any) => {
+const CollectionContent = ({ collection, userId }: any) => {
 
   const elementsPerPage = 25;
 
@@ -29,7 +30,7 @@ const CollectionContent = ({ typeOfCollection, collection, userId }: any) => {
   }
 
   const checkColectionTags = () => {
-    setCurrentCollection(collection.filter((element: any) => element.categories.includes(tags)));
+    setCurrentCollection(collection.filter((element: any) => element.tags.includes(tags)));
     console.log("currentCollection.length on tagchange", currentCollection.length)
   }
 
@@ -55,8 +56,8 @@ const CollectionContent = ({ typeOfCollection, collection, userId }: any) => {
       <TabHeader typeOfFilter="movies" filter={filter} setFilter={setFilter} tags={tags} setTags={setTags}/>
       <div className="grid lg:grid-cols-2 gap-4 my-5">
         {
-          currentCollection.slice((page - 1) * elementsPerPage, page * elementsPerPage).map((movie: any) => {
-            return <LongCard element={movie} filter={filter} currentCollection={currentCollection} setCurrentCollection={setCurrentCollection} userId={userId}/>
+          currentCollection.slice((page - 1) * elementsPerPage, page * elementsPerPage).map((book: any) => {
+            return <BookCard element={book} key={book.bookId} filter={filter} currentCollection={currentCollection} setCurrentCollection={setCurrentCollection} userId={userId}/>
           })
         }
       </div>

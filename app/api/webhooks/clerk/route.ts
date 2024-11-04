@@ -9,6 +9,7 @@ import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
 import MovieCollection from "@/lib/database/models/movieCollection.model";
 import { createMovieCollectionByUserId } from "@/lib/actions/movieCollection.actions";
 import { createSeriesCollectionByUserId } from "@/lib/actions/seriesCollection.actions";
+import { createBookCollectionByUserId } from "@/lib/actions/bookCollection.actions";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -84,12 +85,12 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log(id);
+    //console.log(id);
 //TODO seguir mañana
     const newMovieCollection = await createMovieCollectionByUserId(id);
     const newSeriesCollection = await createSeriesCollectionByUserId(id);
     //const newGamesCollection = await createGamesCollectionByUserId(id);
-    //const newBooksCollection = await createBooksCollectionByUserId(id);
+    const newBooksCollection = await createBookCollectionByUserId(id);
 
     return NextResponse.json({ message: "OK", user: newUser/* , MovieCollection: newMovieCollection */ });
   }
@@ -119,8 +120,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "OK", user: deletedUser });
   }
 
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-  console.log("Webhook body:", body);
+  //console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  //console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });
 }

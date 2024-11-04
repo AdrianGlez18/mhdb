@@ -6,16 +6,21 @@ import React from 'react'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='min-h-screen flex flex-col bg-gray-100 dark:bg-dark-900 overflow-x-hidden'>
-      <Header />
+    /*     <div className='min-h-screen flex flex-col bg-gray-100 dark:bg-dark-900 overflow-x-hidden'>
+          <Header />
+          <MobileNav /> */
+    <div className='w-full content-center justify-center flex flex-col bg-gray-100 dark:bg-dark-900'>
       <MobileNav />
-      <main className='container mx-auto my-8 content-center justify-center'>
+      <div className="flex">
+        <Sidebar />
+        <main className="container">
+          {children}
+        </main>
+      </div>
 
-        {children}
-
-        <Toaster />
-      </main>
+      <Toaster />
     </div>
+    /*     </div> */
   )
 }
 

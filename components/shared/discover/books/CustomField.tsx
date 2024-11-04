@@ -7,9 +7,9 @@ import {
   FormControl,
   FormMessage,
   FormLabel,
-} from "../ui/form";
+} from "../../../ui/form";
 
-import { formSchema } from "./AddSeriesForm";
+import { formSchema } from "./AddBookForm";
 
 type CustomFieldProps = {
   control: Control<z.infer<typeof formSchema>> | undefined;
