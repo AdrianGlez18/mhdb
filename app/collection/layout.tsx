@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { tabsIcons } from "@/constants";
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import TabHeader from '@/components/shared/TabHeader'
+//import TabHeader from '@/components/shared/TabHeader'
 import Sidebar from '@/components/shared/Sidebar';
 
 /* const Layout = ({ children }: { children: React.ReactNode }) => {
