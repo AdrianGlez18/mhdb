@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model PrismaUser {
+  id             String    @id @default(cuid())
+  supabaseAuthId String    @unique
+  email          String
+  movies         Movie[]
+  collection     CollectionItem[]
+  wishlist       WishlistItem[]
+  //books          Book[]
+  //games          Game[]
+  profile        Profile?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  
+}
+
+model Profile {
+  id            String     @id @default(cuid())
+  username      String     @unique
+  isPublic      Boolean
+  imageUrl      String?
+  country       String?
+  language      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  userId String @unique
+  user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+}
+
+model Movie {
+  id          String      @id @default(cuid())
+  tmdbId      String
+  title       String
+  imageUrl    String
+  timesWatched Int
+  isWatching  Boolean
+  isFavorited Boolean
+  isOwned     Boolean
+  notes       String?
+  overview    String?
+  userRating  Int?
+  releaseYear Int?
+  startedWatching DateTime?
+  completedWatching DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  tags        String[]
+
+  userId String
+  user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+}
+
+model CollectionItem {
+  id          String      @id @default(cuid())
+  apiId       String
+  title       String
+  imageUrl    String
+  timesWatched Int
+  isWatching  Boolean
+  isFavorited Boolean
+  isOwned     Boolean
+  author      String?
+  platform    String?
+  notes       String?
+  overview    String?
+  userRating  Int?
+  releaseYear Int?
+  startedWatching DateTime?
+  completedWatching DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  tags        String[]
+
+  contentType ContentType
+
+  userId String
+  user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+}
+
+model WishlistItem {
+  id          String      @id @default(cuid())
+  apiId       String
+  title       String
+  imageUrl    String
+  contentType ContentType
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userId String
+  user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+}
+
+enum ContentType {
+  movie
+  series
+  book
+  game
+}
+//TODO: Tabla visualizaciones. Permite añadir un objeto que indica que una eprsona vio algo. Incluye el id del contenido, del usuario, la fecha de inicio, la final y su rating
