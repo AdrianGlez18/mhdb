@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { useForm } from "react-hook-form"
 import { countries, supportedLanguages } from "@/constants"
+import { useRouter } from "next/navigation"
 export interface ProfileFormData {
     username: string
     country: string
@@ -28,9 +29,12 @@ export default function ProfileForm() {
       isPublic: false,
     },
   })
-//TODO FIX COLORS & CHECK DUPLICATED USERNAMES
+
+  const router = useRouter();
+//TODO FIX COLORS, CHECK DUPLICATED USERNAMES & SEND DATA
   function onSubmit(data: ProfileFormData) {
     console.log("Form submitted with:", data)
+    router.push("/discover");
   }
 
   return (
