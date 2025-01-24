@@ -26,6 +26,25 @@ const create = async (data: InputType): Promise<OutputType> => {
     let newProfile;
 
     try {
+        const checkUsername = await db.profile.findFirst({
+            where: {
+                username
+            }
+        })
+
+        if (checkUsername) {
+            return {
+                error: "Username already in use"
+            }
+        }
+        
+    } catch (error) {
+        return {
+            error: "Internal database error"
+        }
+    }
+
+    try {
         newProfile = await db.profile.create({
             data: {
                 userId, country, language, imageUrl, isPublic, username

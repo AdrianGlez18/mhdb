@@ -1,6 +1,6 @@
 "use client";
 
-import { getBookList, getTMDBTrailer, getTMDBTrendingList } from '@/lib/utils';
+import { getBookList, getTMDBTrailer, getTMDBTrendingList } from '@/lib/server/discover';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type DiscoverContextType = {

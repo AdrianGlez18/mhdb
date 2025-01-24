@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,6 +11,12 @@ import { Switch } from "@/components/ui/switch"
 import { useForm } from "react-hook-form"
 import { countries, supportedLanguages } from "@/constants"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useAction } from "@/hooks/useAction"
+import { createProfile } from "@/lib/server/actions/profile/create"
+import { toast } from "sonner"
+import { ProfileZodSchema } from "@/lib/server/actions/profile/create/schema"
+import { z } from "zod"
 export interface ProfileFormData {
     username: string
     country: string
@@ -21,6 +26,10 @@ export interface ProfileFormData {
   
 
 export default function ProfileForm() {
+
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
   const form = useForm<ProfileFormData>({
     defaultValues: {
       username: "",
@@ -30,12 +39,36 @@ export default function ProfileForm() {
     },
   })
 
-  const router = useRouter();
-//TODO FIX COLORS, CHECK DUPLICATED USERNAMES & SEND DATA
-  function onSubmit(data: ProfileFormData) {
-    console.log("Form submitted with:", data)
-    router.push("/discover");
+  const { execute: executeCreate, fieldErrors: createFieldErrors } = useAction(createProfile, {
+    onSuccess: (data) => {
+      toast.success('Profile created successfully!');
+    },
+    onError: (error) => {
+      toast.error(`Error while creating profile: ${error}`);
+    }
+  });
+
+  async function onSubmit(data: z.infer<typeof ProfileZodSchema>) {
+    console.log("onSubmit")
+    setIsSubmitting(true)
+
+
+    const newProfile = {
+      username: data.username,
+      country: data.country,
+      language: data.language,
+      isPublic: data.isPublic
+    }
+
+    const result = await executeCreate(newProfile)
+
+    setTimeout(() => {
+      setIsSubmitting(false)
+      router.push("/collection")
+    }, 150)
   }
+
+//TODO FIX COLORS, CHECK DUPLICATED USERNAMES & SEND DATA
 
   return (
     <Form {...form}>
@@ -47,7 +80,7 @@ export default function ProfileForm() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your username" {...field} />
+                <Input placeholder="Enter your username" {...field}/>
               </FormControl>
               <FormDescription>This is your public display name.</FormDescription>
               <FormMessage />
@@ -59,7 +92,7 @@ export default function ProfileForm() {
           control={form.control}
           name="country"
           render={({ field }) => (
-            <FormItem className="flex flex-col text-white hover:text-white bg-black/70">
+            <FormItem className="flex flex-col ">
               <FormLabel>Country</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -67,7 +100,7 @@ export default function ProfileForm() {
                     <Button
                       variant="outline"
                       role="combobox"
-                      className={cn("w-full justify-between bg-black/70 hover:bg-black/70 selection:text-white", !field.value && "text-muted-foreground")}
+                      className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
                     >
                       {field.value
                         ? countries.find((country) => country.code === field.value)?.name
@@ -175,13 +208,15 @@ export default function ProfileForm() {
                 <FormDescription>Make your profile visible to everyone.</FormDescription>
               </div>
               <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                <Switch checked={field.value} onCheckedChange={field.onChange} className="text-white"/>
               </FormControl>
             </FormItem>
           )}
         />
 
+        <div className="flex w-full items-center justify-center">
         <Button type="submit">Save Changes</Button>
+        </div>
       </form>
     </Form>
   )

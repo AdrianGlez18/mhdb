@@ -1,4 +1,4 @@
-import { getTMDBTrendingList } from "@/lib/utils";
+import { getTMDBTrendingList } from '@/lib/server/discover';
 import "@/styles/content-slider.css"
 
 const ContentSlider = async () => {

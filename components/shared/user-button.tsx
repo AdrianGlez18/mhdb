@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/components/context/profile-context";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { Separator } from "../ui/separator";
+import Link from "next/link";
 
 const UserButon = () => {
     const { profile, loading } = useProfile();
@@ -16,7 +18,7 @@ const UserButon = () => {
 
     if (loading) return null;
 
-    const profileImg = profile?.profile === null ? `https://ui-avatars.com/api/?name=${profile?.username}` : profile?.profile.imageUrl;
+    const profileImg = profile?.profile?.imageUrl === null ? `https://ui-avatars.com/api/?name=${profile?.profile.username}` : profile?.profile.imageUrl;
     return (
        <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -25,7 +27,9 @@ const UserButon = () => {
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+            <DropdownMenuItem asChild><Link href="/profile">Profile</Link></DropdownMenuItem>
+                <Separator />
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500">Sign out</DropdownMenuItem>
             </DropdownMenuContent>
        </DropdownMenu>
     )
