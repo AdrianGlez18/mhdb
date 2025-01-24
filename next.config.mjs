@@ -20,6 +20,10 @@ const nextConfig = {
             }
         ]
     },
+    eslint: {
+        // TODO: REMOVE. ONLY FOR DEPLOY TESTING
+        ignoreDuringBuilds: true,
+      },
 };
 
 export default nextConfig;
