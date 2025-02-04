@@ -17,20 +17,13 @@ import { createProfile } from "@/lib/server/actions/profile/create"
 import { toast } from "sonner"
 import { ProfileZodSchema } from "@/lib/server/actions/profile/create/schema"
 import { z } from "zod"
-export interface ProfileFormData {
-    username: string
-    country: string
-    language: string
-    isPublic: boolean
-  }
-  
 
 export default function ProfileForm() {
 
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   
-  const form = useForm<ProfileFormData>({
+  const form = useForm<z.infer<typeof ProfileZodSchema>>({
     defaultValues: {
       username: "",
       country: "",

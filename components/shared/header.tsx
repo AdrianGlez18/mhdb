@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import ThemeButton from "./theme-button"
 import { usePathname } from "next/navigation"
-import UserButon from "./user-button"
+import UserButton from "./user-button"
 
 const headerLinks = [
     {
@@ -35,7 +35,7 @@ const Header = () => {
         <div className="w-full hidden md:block">
             <div className="flex items-center justify-between p-2 mx-6 my-2 lg:mx-12 lg:my-4 xl:mx-16 xl:my-6">
                 <Link href="/discover">
-                    <Image src="/images/logo-header.png" alt="MHDB" width={100} height={100} />
+                    <Image src="/images/logo-header.png" alt="MHDB" width={100} height={50} />
                 </Link>
                 <div className="flex gap-8">
                     {headerLinks.map((link) => (
@@ -50,7 +50,7 @@ const Header = () => {
                     ))}
                 </div>
                 <div className="flex gap-4 p-1">
-                    <UserButon />
+                    <UserButton />
                 <ThemeButton />
                 </div>
             </div>

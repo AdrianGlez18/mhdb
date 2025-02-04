@@ -27,7 +27,8 @@ const UserButon = () => {
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-            <DropdownMenuItem asChild><Link href="/profile">Profile</Link></DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" asChild><Link href="/profile">Profile</Link></DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" asChild><Link href="/collection">Collection</Link></DropdownMenuItem>
                 <Separator />
                 <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500">Sign out</DropdownMenuItem>
             </DropdownMenuContent>

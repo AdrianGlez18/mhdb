@@ -1,6 +1,7 @@
 "use client"
 
 import { useProfile } from "@/components/context/profile-context";
+import ProfileContent from "@/components/profile/profile-content";
 
 export default function ProfilePage() {
     const { profile, loading: profileLoading } = useProfile();
@@ -8,6 +9,6 @@ export default function ProfilePage() {
     if (profileLoading) {
         return <div>Loading...</div>;
     }
-console.log(profile)
-    return <div>{profile.name}</div>;
+
+    return <ProfileContent profileType="user" profile={profile} />;
 }

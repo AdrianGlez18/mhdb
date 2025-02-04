@@ -66,3 +66,29 @@ export interface Book {
   createdAt?: string
   updatedAt?: string
 }
+
+export interface ProfileContentItem {
+  id: string
+  title: string
+  imageUrl: string
+  userRating: number
+  contentType: "movie" | "series" | "book" | "game"
+}
+
+
+export type FormUrlQueryParams = {
+  searchParams: string;
+  key: string;
+  value: string | number | null;
+};
+
+export type UrlQueryParams = {
+  params: string;
+  key: string;
+  value: string | null;
+};
+
+export type RemoveUrlQueryParams = {
+  searchParams: string;
+  keysToRemove: string[];
+};

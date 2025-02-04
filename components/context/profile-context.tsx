@@ -6,6 +6,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 type ProfileContextType = {
     profile: any;
     loading: boolean;
+    refreshed: boolean;
+    setRefreshed: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -14,6 +16,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     const router = useRouter();
     const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [refreshed, setRefreshed] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -32,15 +35,16 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
             }
         };
 
-        if (profile === null) {
+        if (profile === null || refreshed) {
             console.log('Fetching profile...');
             fetchProfile();
+            setRefreshed(false);
         }
-    }, []);
+    }, [refreshed]);
 
 
     return (
-        <ProfileContext.Provider value={{ profile, loading }}>
+        <ProfileContext.Provider value={{ profile, loading, refreshed, setRefreshed }}>
             {children}
         </ProfileContext.Provider>
     );

@@ -86,6 +86,8 @@ model CollectionItem {
 
   userId String
   user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+
+  @@unique(name: "unique_content_for_user", fields: [apiId, userId, contentType])
 }
 
 model WishlistItem {
@@ -99,6 +101,8 @@ model WishlistItem {
 
   userId String
   user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+
+  @@unique(name: "unique_content_for_user", fields: [apiId, userId, contentType])
 }
 
 enum ContentType {

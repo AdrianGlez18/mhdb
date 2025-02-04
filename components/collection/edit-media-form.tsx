@@ -18,6 +18,9 @@ import { toast } from "sonner"
 import { Badge } from "../ui/badge"
 import { createCollectionItem } from "@/lib/server/actions/collection/create"
 import { CollectionItemZodSchema } from "@/lib/server/actions/collection/create/schema"
+import { updateCollectionItem } from "@/lib/server/actions/collection/update"
+import Rating from "@/components/shared/Rating"
+import { useProfile } from "../context/profile-context"
 
 export type ActionType = "add" | "update";
 export type MediaType = "movie" | "series" | "book" | "game";
@@ -31,18 +34,26 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
 
     //const { profile, loading: profileLoading } = useProfile();
     const router = useRouter()
+    const { refreshed, setRefreshed } = useProfile();
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [rating, setRating] = useState(defaultValues.userRating || 0)
     //const [selectedTags, setSelectedTags] = useState<string[]>([])
     const [selectedTags, setSelectedTags] = useState<string>("")
+    const dateFixedDefaultValues = {
+        ...defaultValues,
+        startedWatching: typeof defaultValues.startedWatching === "string" ? new Date(defaultValues.startedWatching) : defaultValues.startedWatching,
+        completedWatching: typeof defaultValues.completedWatching === "string" ? new Date(defaultValues.completedWatching) : defaultValues.completedWatching,
+    }
     const form = useForm<z.infer<typeof CollectionItemZodSchema>>({
         resolver: zodResolver(CollectionItemZodSchema),
-        defaultValues: defaultValues
+        defaultValues: dateFixedDefaultValues
     })
 
     const { execute: executeCreate, fieldErrors: createFieldErrors } = useAction(createCollectionItem, {
         onSuccess: (data) => {
             console.log(data);
             toast.success('Content created successfully!');
+            setRefreshed(true);
         },
         onError: () => {
             console.log(createFieldErrors);
@@ -50,11 +61,19 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
         }
     });
 
+    const { execute: executeUpdate, fieldErrors: updateFieldErrors } = useAction(updateCollectionItem, {
+        onSuccess: (data) => {
+            toast.success('Content updated successfully!');
+            setRefreshed(true);
+        },
+        onError: () => {
+            toast.error("Error while updating content");
+        }
+    });
+
     async function onSubmit(data: z.infer<typeof CollectionItemZodSchema>) {
-        console.log("onSubmit")
         setIsSubmitting(true)
 
-        console.log("data", data)
         const formattedTags = selectedTags.split(',').map((tag) => tag.toLowerCase().trim()); //Todo cuando se soporten mltiples idiomas, pasar a toLocaleLowerCase
 
         const newMedia = {
@@ -63,7 +82,6 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
             imageUrl: defaultValues.imageUrl,
             releaseYear: defaultValues.releaseYear,
 
-            //timesWatched: formData.timesWatched,
             timesWatched: data.timesWatched,
             isFavorited: data.isFavorited,
             isOwned: data.isOwned,
@@ -71,19 +89,28 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
             tags: formattedTags,
             overview: data.overview,
             notes: data.notes,
-            userRating: data.userRating,
-            startedWatching: data.startedWatching,
-            completedWatching: data.completedWatching,
+            userRating: parseInt(rating, 10),
+            startedWatching: typeof data.startedWatching === "string" ? new Date(data.startedWatching) : data.startedWatching,
+            completedWatching: typeof data.completedWatching === "string" ? new Date(data.completedWatching) : data.completedWatching,
 
             contentType: mediaType
         }
 
-        const result = await executeCreate(newMedia)
+        if (action === "add") {
+            const result = await executeCreate(newMedia)
 
-        setTimeout(() => {
-            setIsSubmitting(false)
-            router.push("/collection")
-        }, 150)
+            setTimeout(() => {
+                setIsSubmitting(false)
+                router.push("/collection")
+            }, 150)
+        } else if (action === "update") {
+            const result = await executeUpdate(newMedia)
+
+            setTimeout(() => {
+                setIsSubmitting(false)
+                router.push("/collection")
+            }, 150)
+        }
     }
 
     return (
@@ -104,7 +131,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                         </div>
                         <div className="flex-1 space-y-2">
                             <h1 className="text-2xl font-bold">{defaultValues.title}</h1>
-                            <p className="text-sm text-muted-foreground">{defaultValues.overview}</p>
+                            {/* <p className="text-sm text-muted-foreground">{defaultValues.overview.slice(0, 500)}</p> TODO FALLA AL AÑADIR LIBROS SI NO HAY OVERVIEW*/}
                         </div>
                     </div>
                 </CardContent>
@@ -251,7 +278,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
 
                             <div className="space-y-4">
                                 <h2 className="text-lg font-semibold">Rating & Notes</h2>
-                                <FormField
+                                {/* <FormField
                                     control={form.control}
                                     name="userRating"
                                     render={({ field }) => (
@@ -273,6 +300,19 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                                             <FormDescription>Rate this movie from 0 to 10</FormDescription>
                                         </FormItem>
                                     )}
+                                /> */}
+                                <FormField
+                                    control={form.control}
+                                    name="userRating"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full">
+                                            <FormLabel>Rating</FormLabel>
+                                            <FormControl className="w-full flex items-center justify-center">
+                                                <Rating rating={rating} setRating={setRating} /* {...field} className="input-field" */ />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
                                 <FormField
                                     control={form.control}
@@ -291,7 +331,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                                                     }}
                                                 />
                                             </FormControl>
-                                            <FormDescription><div className="flex gap-2">
+                                            <div className="flex gap-2">
                                                 {selectedTags.split(',').map((tag) => (
                                                     <Badge
                                                         key={tag}
@@ -300,7 +340,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                                                     >
                                                         {tag.toLowerCase().trim()}
                                                     </Badge>
-                                                ))}</div></FormDescription>
+                                                ))}</div>
                                         </FormItem>
                                     )}
                                 />
@@ -326,9 +366,9 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                     </Card>
 
                     <div className="flex gap-4">
-                        <Button type="submit" className="flex-1" disabled={isSubmitting} onClick={() => console.log(form.formState.errors, form.getValues())}>
-                            {action === 'add' ? (isSubmitting ? "Adding..."   : "Add to Collection")
-                                              : (isSubmitting ? "Updating..." : "Update Collection")}
+                        <Button type="submit" className="flex-1" disabled={isSubmitting} onClick={() => console.log(form.formState.errors, form.getValues(), typeof form.getValues("startedWatching"))}>
+                            {action === 'add' ? (isSubmitting ? "Adding..." : "Add to Collection")
+                                : (isSubmitting ? "Updating..." : "Update Collection")}
                         </Button>
                         <Button type="button" variant="outline" onClick={() => router.back()} disabled={isSubmitting}>
                             Cancel

@@ -1,6 +1,6 @@
 "use client"
 
-import { BookmarkPlus, Info, ShoppingCart } from 'lucide-react'
+import { BookmarkPlus, HousePlus, Info, ShoppingCart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import {
@@ -14,6 +14,9 @@ import { useAction } from '@/hooks/useAction'
 import { createWishlistItem } from '@/lib/server/actions/wishlist/create'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { createCollectionItem } from '@/lib/server/actions/collection/create'
+import { useRouter } from 'next/navigation'
+import { checkItemInCollection } from '@/lib/server/actions/collection/read'
 
 interface DiscoverCardProps {
   content: DiscoverMovie
@@ -30,7 +33,9 @@ content,
   onBuy 
 }: DiscoverCardProps) {
 
-  const { execute: executeCreate, fieldErrors: createFieldErrors } = useAction(createWishlistItem, {
+  const router = useRouter();
+
+  const { execute: executeAddWish, fieldErrors: addWishFieldErrors } = useAction(createWishlistItem, {
     onSuccess: (data) => {
         toast.success('Content wishlisted successfully!');
     },
@@ -38,12 +43,29 @@ content,
         toast.error(`Error while wishlisting content: ${error}`);
     }
 });
-//todo ver duplicados
-  const onAddToList = () => {
-    executeCreate({ 
+
+const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(checkItemInCollection, {
+  onSuccess: (data) => {
+    const contentType = content.media_type === 'movie' ? 'movie' : 'series';
+    router.push(`/collection/${contentType}/add/${data.apiId}`);
+  },
+  onError: (error) => {
+      toast.error(`Error: ${error}`);
+  }
+});
+
+  const onAddToWishlistList = () => {
+    executeAddWish({ 
       apiId: content.id.toString(), 
       title: (content.title || content.name || ''), 
       imageUrl: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`, 
+      contentType: content.media_type === 'movie' ? 'movie' : 'series',
+    });
+  }
+
+  const onAddToCollection = () => {
+    executeCheck({ 
+      apiId: content.id.toString(), 
       contentType: content.media_type === 'movie' ? 'movie' : 'series',
     });
   }
@@ -74,15 +96,15 @@ content,
               <Button
                 variant="outline"
                 size="icon"
-                onClick={onAddToList}
+                onClick={onAddToWishlistList}
                 className="aspect-square"
               >
                 <BookmarkPlus className="h-5 w-5" />
-                <span className="sr-only">Add to list</span>
+                <span className="sr-only">Add to wishlist</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Add to list</p>
+              <p>Add to wishlist</p>
             </TooltipContent>
           </Tooltip>
 
@@ -108,6 +130,23 @@ content,
               <Button
                 variant="default"
                 size="icon"
+                onClick={onAddToCollection}
+                className="aspect-square"
+              >
+                <HousePlus className="h-5 w-5" />
+                <span className="sr-only">Add to collection</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add to collection</p>
+            </TooltipContent>
+          </Tooltip>
+
+          {/* <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="default"
+                size="icon"
                 onClick={() => onBuy?.(content.id!)}
                 className="aspect-square"
               >
@@ -118,7 +157,7 @@ content,
             <TooltipContent>
               <p>Check shop</p>
             </TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
         </TooltipProvider>
       </CardFooter>
     </Card>

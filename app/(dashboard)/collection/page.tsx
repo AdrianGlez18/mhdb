@@ -10,28 +10,32 @@ import { useProfile } from "@/components/context/profile-context"
 
 
 export default function CollectionPage() {
-  const { profile, loading } = useProfile()
+  const { profile, loading, refreshed, setRefreshed } = useProfile()
   const [selectedType, setSelectedType] = useState<MediaType>("all")
   const [selectedCollection, setSelectedCollection] = useState<CollectionType>("collection")
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState<SortType>("date")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  console.log("refreshed", refreshed)
 
   // Get all unique tags
   const allTags = useMemo(() => {
     if (!profile) return []
     return Array.from(
-      new Set([...(profile.collection || []), ...(profile.wishlist || [])].flatMap((item) => item.tags)), //todo quitar wishlist si al final no le añaden tags
+      new Set([...(profile?.collection)].flatMap((item) => item.tags)), //todo quitar wishlist si al final no le añaden tags
     ).sort()
   }, [profile])
+  console.log(allTags)
 
   const collection = useMemo(() => {
     if (!profile) return []
+    console.log("refreshing collection");
     return selectedCollection === "collection" ? profile.collection : profile.wishlist
-  }, [profile, selectedCollection])
+  }, [profile, selectedCollection, refreshed])
 
   const filteredItems = useMemo(() => {
     if(loading || !collection) return []
+    console.log("refreshing filtered items");
     return collection
       .filter((item:any) => {
         // Filter by media type
@@ -41,18 +45,18 @@ export default function CollectionPage() {
         if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
 
         // Filter by tags
-        if (selectedTags.length > 0 && !selectedTags.every((tag) => item.tags.includes(tag))) return false
+        if (selectedTags.length > 0 && !selectedTags.every((tag) => item.tags?.includes(tag))) return false
 
         return true
       })
       .sort((a:any, b:any) => {
         switch (sortBy) {
           case "rating":
-            return b.rating - a.rating
+            return b.userRating - a.userRating
           case "alphabetical":
             return a.title.localeCompare(b.title)
           case "date":
-            return new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime()
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           default:
             return 0
         }
@@ -83,7 +87,7 @@ export default function CollectionPage() {
             onSearch={setSearchQuery}
             onSort={setSortBy}
             onTagsChange={setSelectedTags}
-            availableTags={allTags}
+            availableTags={allTags ?? []}
             selectedTags={selectedTags}
           />
         </div>

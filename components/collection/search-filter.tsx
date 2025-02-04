@@ -3,7 +3,7 @@
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,8 @@ export default function SearchAndFilter({
   availableTags,
   selectedTags,
 }: SearchAndFilterProps) {
+  console.log("availableTags", availableTags)
+  const testags = ["test1", "test2", "test3"]
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <div className="relative flex-1">
@@ -43,7 +45,7 @@ export default function SearchAndFilter({
           </SelectContent>
         </Select>
 
-        {/* <Popover>
+        <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-[140px] justify-between">
               {selectedTags.length > 0 ? <>Tags ({selectedTags.length})</> : "Tags"}
@@ -51,38 +53,42 @@ export default function SearchAndFilter({
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="end">
             <Command>
-              <CommandInput placeholder="Search tags..." />
-              <CommandEmpty>No tags found.</CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {availableTags.map((tag) => (
-                  <CommandItem
-                    key={tag}
-                    onSelect={() => {
-                      const newTags = selectedTags.includes(tag)
-                        ? selectedTags.filter((t) => t !== tag)
-                        : [...selectedTags, tag]
-                      onTagsChange(newTags)
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        selectedTags.includes(tag)
-                          ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible",
-                      )}
+              <CommandList>
+                <CommandInput placeholder="Search tags..." />
+                <CommandEmpty>No tags found.</CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {availableTags.map((tag) => (
+                    <CommandItem
+                      key={tag}
+                      value={tag}
+                      onSelect={() => {
+                        const newTags = selectedTags.includes(tag)
+                          ? selectedTags.filter((t) => t !== tag)
+                          : [...selectedTags, tag]
+                        onTagsChange(newTags)
+                      }}
                     >
-                      <span className="h-4 w-4 text-xs">✓</span>
-                    </div>
-                    {tag}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <div
+                        className={cn(
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          selectedTags.includes(tag)
+                            ? "bg-primary text-primary-foreground"
+                            : "opacity-50 [&_svg]:invisible",
+                        )}
+                      >
+                        <span className="h-4 w-4 text-xs">✓</span>
+                      </div>
+                      {tag}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
-        </Popover> */}
+        </Popover>
       </div>
     </div>
   )
 }
 
+/*  */

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
+import TrailerButton from './trailer-button'
 
 export default function Hero({ trailer }: { trailer: any }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -27,34 +28,16 @@ export default function Hero({ trailer }: { trailer: any }) {
           {trailer.description}
         </p>
         <div className="mt-4 flex gap-4">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="lg" className="gap-2">
-                <Play className="h-5 w-5" />
-                Watch Trailer
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xl">
-              <DialogHeader>
-                <DialogTitle>{trailer.title}</DialogTitle>
-                <DialogDescription>
-                  {trailer.description}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="w-full p-1">
-              <div className="aspect-video">
-                <YouTubeEmbed videoid={trailer.key} height={200} />
-                </div>
-              </div>
-
-
-            </DialogContent>
-          </Dialog>
+          <TrailerButton
+            title={trailer.title}
+            description={trailer.description}
+            youtubeKey={trailer.key}
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen} />
           <Link href={`/discover/movie/${trailer.id}`} passHref>
-          <Button size="lg" variant="secondary">
-            Learn More
-          </Button>
+            <Button size="lg" variant="secondary">
+              Learn More
+            </Button>
           </Link>
         </div>
       </div>

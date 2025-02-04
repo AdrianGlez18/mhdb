@@ -21,9 +21,58 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
+import { useAction } from "@/hooks/useAction"
+import { deleteCollectionItem } from "@/lib/server/actions/collection/delete"
+import { toast } from "sonner"
+import { useProfile } from "@/components/context/profile-context"
+import { deleteWishlistItem } from "@/lib/server/actions/wishlist/delete"
+import Link from "next/link"
 
 const CollectionCard = ({ item }: { item: CollectionItem }) => {
     const router = useRouter()
+    const { setRefreshed } = useProfile();
+
+    const { execute: executeDeleteFromCollection, fieldErrors: deleteFieldErrors } = useAction(deleteCollectionItem, {
+        onSuccess: (data) => {
+            console.log(data);
+            toast.success('Content deleted successfully!');
+            setRefreshed(true);
+            
+        },
+        onError: (error) => {
+            console.log(deleteFieldErrors, error);
+            toast.error("Error while deleting content");
+        }
+    });
+
+    const { execute: executeDeleteFromWishlist, fieldErrors: deleteWishFieldErrors } = useAction(deleteWishlistItem, {
+        onSuccess: (data) => {
+            console.log(data);
+            toast.success('Content deleted successfully!');
+            setRefreshed(true);
+            
+        },
+        onError: (error) => {
+            console.log(deleteFieldErrors, error);
+            toast.error("Error while deleting content");
+        }
+    });
+
+    const handleDeleteFromCollection = async () => {
+        executeDeleteFromCollection({
+            apiId: item.apiId,
+            contentType: item.contentType
+        })
+    }
+
+    const handleDeleteFromWishlist = async () => {
+        executeDeleteFromWishlist({
+            apiId: item.apiId,
+            contentType: item.contentType
+        })
+    }
+
+    const addedAt = new Date(item.createdAt).toLocaleDateString()
     return (
         <Card className="group overflow-hidden">
             <div className="aspect-[2/3] relative overflow-hidden">
@@ -39,7 +88,7 @@ const CollectionCard = ({ item }: { item: CollectionItem }) => {
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <div className="absolute right-2 top-2 rounded-full bg-background/20 px-2 py-1 text-sm font-semibold backdrop-blur-sm cursor-pointer z-40">
+                        <div className="absolute right-2 top-2 rounded-full bg-background/80 px-2 py-1 text-sm font-semibold backdrop-blur-sm cursor-pointer z-40 text-primary">
                             {
                                 (item.contentType === "movie") ? <Film className="h-4 w-4" /> :
                                     (item.contentType === "series") ? <Tv className="h-4 w-4" /> :
@@ -51,19 +100,19 @@ const CollectionCard = ({ item }: { item: CollectionItem }) => {
 
                     {
                         item.tags ? (
-                            <DropdownMenuContent className="w-56">
+                            <DropdownMenuContent className="w-56 cursor-pointer">
                                 <DropdownMenuLabel>Options</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={() => router.push(`/collection/update/${item.id}`)}>
-                                        Edit in colection
+                                <DropdownMenuGroup >
+                                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push(`/collection/${item.contentType}/update/${item.apiId}`)}>
+                                        Edit in collection
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        View details
+                                    <DropdownMenuItem className="cursor-pointer" asChild>
+                                    <Link href={`/discover/${item.contentType}/${item.apiId}`}>View details</Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-400">
+                                <DropdownMenuItem className="text-red-400 cursor-pointer" onClick={handleDeleteFromCollection}>
                                     Delete from collection
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -72,15 +121,15 @@ const CollectionCard = ({ item }: { item: CollectionItem }) => {
                                 <DropdownMenuLabel>Options</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={() => router.push(`/collection/update/${item.id}`)}>
+                                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push(`/collection/${item.contentType}/add/${item.apiId}`)}>
                                         Add to colection
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        View details
+                                    <DropdownMenuItem className="cursor-pointer" asChild>
+                                        <Link href={`/discover/${item.contentType}/${item.apiId}`}>View details</Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-400">
+                                <DropdownMenuItem className="text-red-400 cursor-pointer" onClick={handleDeleteFromWishlist}>
                                     Delete from wishlist
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -89,13 +138,13 @@ const CollectionCard = ({ item }: { item: CollectionItem }) => {
 
                 </DropdownMenu>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white opacity-0 transition-opacity group-hover:opacity-100">
                     <p className="line-clamp-2 text-sm font-medium">{item.title}</p>
-                    <p className="text-xs text-gray-300">Added {new Date(item.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-300">Added {addedAt}</p>
                     <div className="mt-2 flex flex-wrap gap-1">
                         {item.tags && item.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-background/20 hover:bg-background/30">
+                            <Badge key={tag} variant="secondary" className="bg-black/20 hover:bg-black/30 text-gray-100">
                                 {tag}
                             </Badge>
                         ))}

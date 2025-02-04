@@ -35,15 +35,36 @@ const create = async (data: InputType): Promise<OutputType> => {
         platform, 
         contentType, 
         startedWatching, 
-        completedWatching
-    } = data;
+        completedWatching,
+        overview
+    } = data; 
 
     let newContent;
 
     try {
+        newContent = await db.collectionItem.findFirst({
+            where: {
+                apiId,
+                userId,
+                contentType
+            }
+        })
+
+        if (newContent) {
+            return {
+                error: "Content already in collection"
+            }
+        }
+    } catch (error) {
+        return {
+            error: "Internal database error"
+        }
+    }
+
+    try {
         newContent = await db.collectionItem.create({
             data: {
-                apiId, userId, title, imageUrl, isWatching, timesWatched, isFavorited, isOwned, tags, notes, userRating, releaseYear, author, platform, contentType, startedWatching, completedWatching
+                apiId, userId, title, imageUrl, isWatching, timesWatched, isFavorited, isOwned, tags, overview, notes, userRating, releaseYear, author, platform, contentType, startedWatching, completedWatching
             }
         })
     } catch (error) {
