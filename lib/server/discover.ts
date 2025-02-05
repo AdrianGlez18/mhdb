@@ -7,7 +7,7 @@ export const getTMDBTrendingList = async (contentType: string, page: number) => 
 
     const res = await fetch(
         `https://api.themoviedb.org/3/trending/${contentType}/week?api_key=${TMDB_API_KEY}&language=en-US&page=${page/* .toString() */}`,
-        { next: { revalidate: 10000 } }
+        { next: { revalidate: 0 } }
     );
     const data = await res.json();
     if (!res.ok) {
@@ -25,7 +25,7 @@ export const getTMDBSearchResult = async (query: string, contentType: string, pa
     if (query === '') {
         const res = await fetch(
             `https://api.themoviedb.org/3/trending/${fetchUrlParam}/week?api_key=${TMDB_API_KEY}&language=en-US&page=${page/* .toString() */}`,
-            { next: { revalidate: 10000 } }
+            { next: { revalidate: 0 } }
         );
         const data = await res.json();
         if (!res.ok) {
@@ -37,7 +37,7 @@ export const getTMDBSearchResult = async (query: string, contentType: string, pa
         const res = await fetch(
         
             `https://api.themoviedb.org/3/search/${fetchUrlParam}?query=${query}&api_key=${TMDB_API_KEY}&language=en-US&page=${page/* .toString() */}`,
-            { next: { revalidate: 10000 } }
+            { next: { revalidate: 0 } }
           );
           const data = await res.json();
           if (!res.ok) {
@@ -53,7 +53,7 @@ export const getTMDBTrailer = async (content: any) => {
     const TMDB_API_KEY = process.env.TMDB_API_KEY;
     const res = await fetch(
         `https://api.themoviedb.org/3/${content.media_type}/${content.id}/videos?api_key=${TMDB_API_KEY}`,
-        { next: { revalidate: 10000 } }
+        { next: { revalidate: 0 } }
     );
     const data = await res.json();
     if (!res.ok) {
@@ -71,7 +71,7 @@ export const getTMDBDetails = async (id: string, contentType: string) => {
 
     const res = await fetch(
         `https://api.themoviedb.org/3/${contentType}/${id}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits`,
-        { next: { revalidate: 10000 } }
+        { next: { revalidate: 0 } }
     );
 
     const data = await res.json();
@@ -88,7 +88,7 @@ export const getBookDetails = async (id: string) => {
 
     const res = await fetch(
         `https://www.googleapis.com/books/v1/volumes/${id}`,
-        { next: { revalidate: 10000 } }
+        { next: { revalidate: 0 } }
     );
 
     const data = await res.json();
@@ -118,7 +118,7 @@ export const getBookList = async (searchQuery: string = '', page: number = 1) =>
     if (searchQuery === '') {
         const res = await fetch(
             randomEndpoint,
-            { next: { revalidate: 10000 } }
+            { next: { revalidate: 0 } }
         );
         const data = await res.json();
         if (!res.ok) {
@@ -134,7 +134,7 @@ export const getBookList = async (searchQuery: string = '', page: number = 1) =>
         const res = await fetch(
 
             `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=20&startIndex=${startIndex}`,//&maxResults=20
-            { next: { revalidate: 10000 } }
+            { next: { revalidate: 0 } }
         );
         const data = await res.json();
 
