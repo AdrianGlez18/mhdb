@@ -1,10 +1,8 @@
-/* export const dynamic = 'force-dynamic'; */
-
 import Link from "next/link"
 import { Film, Tv, BookOpen, Gamepad2, User, List, Star, Share2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import FeatureCard from "@/components/landing/feature-card"
-/* import ContentSlider from "@/components/landing/content-slider" */
+import ContentSlider from "@/components/landing/content-slider"
 import Header from "@/components/landing/header"
 
 export default function LandingPage() {
@@ -63,7 +61,7 @@ export default function LandingPage() {
             </Button>
           </div>
         </div>
-        {/* <ContentSlider /> */}
+        <ContentSlider />
       </section>
 
       <section className="bg-background/50 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
