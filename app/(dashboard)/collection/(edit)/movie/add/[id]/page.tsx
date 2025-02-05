@@ -1,6 +1,5 @@
 import EditMovieForm from "@/components/collection/edit-media-form"
 
-
 interface AddMoviePageProps {
   params: {
     id: string
@@ -9,7 +8,7 @@ interface AddMoviePageProps {
 
 export default async function AddMoviePage({ params }: AddMoviePageProps) {
   const { id } = params
-  const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`)
+  const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`, { cache: 'no-store' })
   const movieInfo = await response.json()
   console.log("info: ", movieInfo)
   

@@ -64,7 +64,6 @@ export default function LandingPage() {
         <ContentSlider />
       </section>
 
-      {/* Features Section */}
       <section className="bg-background/50 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
@@ -86,7 +85,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Statistics Section */}
       <section className="border-y bg-primary/5 px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,7 +102,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.primary.100),transparent)]" />
         <div className="mx-auto max-w-2xl text-center">

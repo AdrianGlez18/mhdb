@@ -8,7 +8,7 @@ interface AddSeriesPageProps {
 
 export default async function AddSeriesPage({ params }: AddSeriesPageProps) {
   const { id } = params
-  const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`)
+  const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`, { cache: 'no-store' })
   const seriesInfo = await response.json()
   
   const defaultValues = {

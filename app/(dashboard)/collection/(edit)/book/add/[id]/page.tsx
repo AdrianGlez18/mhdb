@@ -9,7 +9,7 @@ interface AddBookPageProps {
 
 export default async function AddBookPage({ params }: AddBookPageProps) {
   const { id } = params
-  const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
+  const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`, { cache: 'no-store' })
   const bookInfo = await response.json()
   const { volumeInfo } = bookInfo
   console.log("info: ", bookInfo)
