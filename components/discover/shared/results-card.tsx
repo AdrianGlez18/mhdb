@@ -83,7 +83,7 @@ export default function ResultsCard({
     <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
-          <Link href={`/discover/${contentType}/${content.id}/add`}>
+          <Link href={`/collection/${contentType}/add/${content.id}`}>
             <img
               src={imageUrl}
               alt={`${title} poster`}

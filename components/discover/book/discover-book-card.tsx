@@ -62,7 +62,7 @@ export default function BookDiscoverCard({
     <Card className="w-[200px] overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
-          <Link href={`/discover/book/${content.id}/add`}>
+          <Link href={`/collection/book/add/${content.id}`}>
             <img
               src={book.imageUrl}
               alt={book.title}
