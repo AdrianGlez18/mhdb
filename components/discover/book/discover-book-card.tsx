@@ -62,7 +62,7 @@ export default function BookDiscoverCard({
     <Card className="w-[200px] overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
-          <Link href={`/collection/book/add/${content.id}`}>
+          <Link href={`/discover/book/${book.id}`}>
             <img
               src={book.imageUrl}
               alt={book.title}
@@ -78,15 +78,16 @@ export default function BookDiscoverCard({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
+            <Link href={`/collection/book/add/${content.id}`} passHref>
               <Button
                 variant="outline"
                 size="icon"
-                onClick={onAddToList}
                 className="aspect-square"
               >
                 <BookmarkPlus className="h-5 w-5" />
                 <span className="sr-only">Add to list</span>
               </Button>
+              </Link>
             </TooltipTrigger>
             <TooltipContent>
               <p>Add to list</p>
@@ -95,15 +96,16 @@ export default function BookDiscoverCard({
 
           <Tooltip>
             <TooltipTrigger asChild>
+              <Link href={`/collection/books/${book.id}`} passHref>
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => onViewDetails?.(content.id!)}
                 className="aspect-square"
               >
                 <Info className="h-5 w-5" />
                 <span className="sr-only">View details</span>
               </Button>
+              </Link>
             </TooltipTrigger>
             <TooltipContent>
               <p>View details</p>

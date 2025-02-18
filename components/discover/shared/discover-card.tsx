@@ -74,7 +74,7 @@ const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(chec
     <Card className="w-[200px] overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
-          <Link href={`/discover/${content.media_type === 'movie' ? 'movie' : 'series'}/${content.id}/add`}>
+          <Link href={`/discover/${content.media_type === 'movie' ? 'movie' : 'series'}/${content.id}`}>
           <img
             src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`}
             alt={`${content.title} poster`}
@@ -110,15 +110,16 @@ const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(chec
 
           <Tooltip>
             <TooltipTrigger asChild>
+            <Link href={`/discover/${content.media_type === 'movie' ? 'movie' : 'series'}/${content.id}`} passHref>
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => onViewDetails?.(content.id!)}
                 className="aspect-square"
               >
                 <Info className="h-5 w-5" />
                 <span className="sr-only">View details</span>
               </Button>
+              </Link>
             </TooltipTrigger>
             <TooltipContent>
               <p>View details</p>
