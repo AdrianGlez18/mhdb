@@ -96,7 +96,7 @@ export default function BookDiscoverCard({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href={`/collection/books/${book.id}`} passHref>
+              <Link href={`/discover/book/${book.id}`} passHref>
               <Button
                 variant="outline"
                 size="icon"

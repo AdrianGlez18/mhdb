@@ -3,7 +3,6 @@ import ThemeButton from "@/components/shared/theme-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image"
 
-
 const EditProfilePage = () => {
   return (
     <div className="w-full h-screen flex items-center justify-center">

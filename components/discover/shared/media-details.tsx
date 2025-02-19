@@ -143,11 +143,11 @@ export default function MediaDetails({ content }: { content: any }) {
 
                 <div className="grid gap-6 lg:grid-cols-[300px,1fr] lg:gap-12">
                     <div className="space-y-4">
-                        <div className="overflow-hidden rounded-lg">
+                        <div className="overflow-hidden rounded-lg w-full flex justify-center">
                             <img
                                 src={media.imageUrl}
                                 alt={`${media.title} poster`}
-                                className="aspect-[2/3] w-full object-cover"
+                                className="aspect-[2/3] w-full object-cover max-w-60"
                             />
                         </div>
                         <div className="space-y-2 text-center">

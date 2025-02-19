@@ -1,9 +1,12 @@
 "use server"
 
+import { cache } from "react";
 
-export const getTMDBTrendingList = async (contentType: string, page: number) => {
+
+export const getTMDBTrendingList = cache(async (contentType: string, page: number) => {
     //TODO Add labguage support
     const TMDB_API_KEY = process.env.TMDB_API_KEY;
+    console.log(contentType, page, TMDB_API_KEY)
 
     const res = await fetch(
         `https://api.themoviedb.org/3/trending/${contentType}/week?api_key=${TMDB_API_KEY}&language=en-US&page=${page/* .toString() */}`,
@@ -15,9 +18,9 @@ export const getTMDBTrendingList = async (contentType: string, page: number) => 
     }
 
     return data;
-}
+});
 
-export const getTMDBSearchResult = async (query: string, contentType: string, page: number) => {
+export const getTMDBSearchResult = cache(async (query: string, contentType: string, page: number) => {
     //TODO Add labguage support
     const TMDB_API_KEY = process.env.TMDB_API_KEY;
     const fetchUrlParam = contentType === "series" ? "tv" : "movie";
@@ -46,9 +49,9 @@ export const getTMDBSearchResult = async (query: string, contentType: string, pa
           return data;
     }
     return [];
-}
+});
 
-export const getTMDBTrailer = async (content: any) => {
+export const getTMDBTrailer = cache(async (content: any) => {
     //TODO Add labguage support
     const TMDB_API_KEY = process.env.TMDB_API_KEY;
     const res = await fetch(
@@ -63,9 +66,9 @@ export const getTMDBTrailer = async (content: any) => {
     const result = data.results.find((video: any) => video.type === 'Trailer');
 
     return result;
-}
+});
 
-export const getTMDBDetails = async (id: string, contentType: string) => {
+export const getTMDBDetails = cache(async (id: string, contentType: string) => {
     //TODO Add labguage support
     const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
@@ -81,9 +84,9 @@ export const getTMDBDetails = async (id: string, contentType: string) => {
     }
 
     return data;
-}
+});
 
-export const getBookDetails = async (id: string) => {
+export const getBookDetails = cache(async (id: string) => {
     //TODO Add labguage support
 
     const res = await fetch(
@@ -98,9 +101,9 @@ export const getBookDetails = async (id: string) => {
     }
 
     return data;
-}
+});
 
-export const getBookList = async (searchQuery: string = '', page: number = 1) => {
+export const getBookList = cache(async (searchQuery: string = '', page: number = 1) => {
     //TODO Add labguage support.Only working in English
     //const newQuery: string = searchQuery.trim().replace('', '+');
 
@@ -113,7 +116,7 @@ export const getBookList = async (searchQuery: string = '', page: number = 1) =>
         'https://www.googleapis.com/books/v1/volumes?q=subject:adventure&langRestrict=en&orderBy=relevance&maxResults=20',
     ]
 
-    const randomEndpoint = defaultTrendingBookEndpoints[Math.round(Math.random() * defaultTrendingBookEndpoints.length)]
+    const randomEndpoint = defaultTrendingBookEndpoints[Math.round(Math.random() * (defaultTrendingBookEndpoints.length - 1))]
 
     if (searchQuery === '') {
         const res = await fetch(
@@ -146,4 +149,4 @@ export const getBookList = async (searchQuery: string = '', page: number = 1) =>
 
     }
 
-}
+});

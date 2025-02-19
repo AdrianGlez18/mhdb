@@ -3,8 +3,6 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { db } from "@/lib/server/db";
-import { read } from "fs";
 import { useAction } from "@/hooks/useAction";
 import { findProfile } from "@/lib/server/actions/profile/read";
 
@@ -14,10 +12,12 @@ const AuthCallbackPage = () => {
 
     const { execute, fieldErrors } = useAction(findProfile, {
         onSuccess: (data) => {
-          console.log("inside onSUccess");
+            console.log("inside onSUccess");
+            if (data == undefined) router.push('/profile/edit');
+            else router.push('/discover');
         },
         onError: (error) => {
-          console.log("inside onError");
+            console.log("inside onError");
         }
     });
     useEffect(() => {
@@ -30,11 +30,8 @@ const AuthCallbackPage = () => {
                     .select()
                     .eq('userId', session.user.id); */
 
-                    const data = await execute({ userId: session.user.id });
-                    console.log("after execute", data);
-
-                if (data == undefined) router.push('/profile/edit');
-                else router.push('/discover');
+                const data = await execute({ userId: session.user.id });
+                console.log("after execute", data);
             }
         });
 
