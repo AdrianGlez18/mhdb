@@ -26,7 +26,7 @@ export const useAction = <TInput, TOutput>(
             const result = await action(input);
             console.log(result);
 
-            if (!result) {
+            if (!result || !result.data) {
                 console.log("no result");
                 return;
             }

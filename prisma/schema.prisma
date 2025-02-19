@@ -15,13 +15,12 @@ model PrismaUser {
   movies         Movie[]
   collection     CollectionItem[]
   wishlist       WishlistItem[]
+  reviews        Review[]
   //books          Book[]
   //games          Game[]
   profile        Profile?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-
-  
 }
 
 model Profile {
@@ -31,6 +30,7 @@ model Profile {
   imageUrl      String?
   country       String?
   language      String?
+  reviews       Review[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
@@ -103,6 +103,26 @@ model WishlistItem {
   user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
 
   @@unique(name: "unique_content_for_user", fields: [apiId, userId, contentType])
+}
+
+model Review {
+  id            String     @id @default(cuid())
+  isPublic      Boolean
+  contentType   ContentType
+  contentId     String
+  rating        Int
+  body          String
+  language      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  username      String
+  profile       Profile @relation(fields: [username], references: [userId], onDelete: Cascade)
+
+  userId        String
+  user          PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+
+  @@unique(name: "unique_review_for_user_and_content", fields: [userId, contentId, contentType])
 }
 
 enum ContentType {

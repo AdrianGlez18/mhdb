@@ -12,9 +12,8 @@ const AuthCallbackPage = () => {
 
     const { execute, fieldErrors } = useAction(findProfile, {
         onSuccess: (data) => {
-            console.log("inside onSUccess");
-            if (data == undefined) router.push('/profile/edit');
-            else router.push('/discover');
+            console.log("inside onSUccess ", data);
+            router.push('/discover');
         },
         onError: (error) => {
             console.log("inside onError");
@@ -32,6 +31,7 @@ const AuthCallbackPage = () => {
 
                 const data = await execute({ userId: session.user.id });
                 console.log("after execute", data);
+                router.push('/profile/edit')
             }
         });
 

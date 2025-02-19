@@ -57,7 +57,7 @@ export default function ProfileForm() {
 
     setTimeout(() => {
       setIsSubmitting(false)
-      router.push("/collection")
+      router.push("/discover")
     }, 150)
   }
 
