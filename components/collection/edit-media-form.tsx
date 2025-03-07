@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Star, X } from "lucide-react"
+import { ArrowLeft, Book, Bookmark, Check, Eye, Home, Plus, Star, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -24,6 +24,7 @@ import { useProfile } from "../context/profile-context"
 
 export type ActionType = "add" | "update";
 export type MediaType = "movie" | "series" | "book" | "game";
+
 interface EditMovieFormProps {
     defaultValues: any
     mediaType: MediaType
@@ -93,6 +94,8 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
             startedWatching: typeof data.startedWatching === "string" ? new Date(data.startedWatching) : data.startedWatching,
             completedWatching: typeof data.completedWatching === "string" ? new Date(data.completedWatching) : data.completedWatching,
 
+            watchLog: data.watchLog,
+
             contentType: mediaType
         }
 
@@ -113,6 +116,10 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
         }
     }
 
+    const overview = defaultValues.overview ?
+        (defaultValues.overview.length >= 500 ? defaultValues.overview.slice(0, Math.min(defaultValues.overview.length, 500)) : defaultValues.overview) :
+        'No description provided';
+
     return (
         <div className="space-y-6">
             <Button variant="ghost" className="mb-2" onClick={() => router.back()}>
@@ -131,7 +138,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                         </div>
                         <div className="flex-1 space-y-2">
                             <h1 className="text-2xl font-bold">{defaultValues.title}</h1>
-                            {/* <p className="text-sm text-muted-foreground">{defaultValues.overview.slice(0, 500)}</p> TODO FALLA AL AÑADIR LIBROS SI NO HAY OVERVIEW*/}
+                            <p className="text-sm text-muted-foreground">{overview}...</p>
                         </div>
                     </div>
                 </CardContent>
@@ -141,7 +148,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <Card>
                         <CardContent className="p-6 space-y-6">
-                            <div className="space-y-4">
+                            {/* <div className="space-y-4">
                                 <h2 className="text-lg font-semibold">Watching Status</h2>
                                 <div className="grid gap-6 sm:grid-cols-2">
                                     <FormField
@@ -201,42 +208,50 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                                             </>
                                         )
                                     }
+                                </div>
+                            </div>
+
+                            <Separator /> */}
+
+                            <div className="space-y-4">
+                                <h2 className="text-lg font-semibold">Status</h2>
+                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                     {/* <FormField
                                         control={form.control}
-                                        name="lastWatched"
+                                        name="isFavorited"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Last Watched</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="date"
-                                                        {...field}
-                                                        value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
-                                                        onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-                                                    />
+                                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                                                 </FormControl>
                                             </FormItem>
                                         )}
                                     /> */}
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            <div className="space-y-4">
-                                <h2 className="text-lg font-semibold">Status</h2>
-                                <div className="grid gap-6 sm:grid-cols-2">
                                     <FormField
                                         control={form.control}
                                         name="isFavorited"
                                         render={({ field }) => (
-                                            <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel className="text-base">Favorite</FormLabel>
-                                                    <FormDescription>Mark this movie as a favorite</FormDescription>
-                                                </div>
+                                            <FormItem>
                                                 <FormControl>
-                                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => field.onChange(!field.value)}
+                                                        className={`flex items-center gap-2 rounded-lg px-4 py-2 w-full justify-center ${field.value
+                                                            ? "bg-red-700 hover:bg-red-600"
+                                                            : "bg-red-400 hover:bg-red-600"
+                                                            } text-white transition-colors`}
+                                                    >
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24"
+                                                            fill="currentColor"
+                                                            className="w-5 h-5"
+                                                        >
+                                                            <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                                                        </svg>
+                                                        Favorite
+                                                        <Check className={field.value ? 'w-4 h-4' : 'hidden'} />
+                                                    </button>
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -245,13 +260,20 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                                         control={form.control}
                                         name="isOwned"
                                         render={({ field }) => (
-                                            <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel className="text-base">Owned</FormLabel>
-                                                    <FormDescription>You own this movie</FormDescription>
-                                                </div>
+                                            <FormItem>
                                                 <FormControl>
-                                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => field.onChange(!field.value)}
+                                                        className={`flex items-center gap-2 rounded-lg px-4 py-2 w-full justify-center ${field.value
+                                                            ? "bg-blue-700 hover:bg-blue-600"
+                                                            : "bg-blue-400 hover:bg-blue-600"
+                                                            } text-white transition-colors`}
+                                                    >
+                                                        <Home className="w-4 h-4" />
+                                                        Owned
+                                                        <Check className={field.value ? 'w-4 h-4' : 'hidden'} />
+                                                    </button>
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -260,18 +282,127 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
                                         control={form.control}
                                         name="isWatching"
                                         render={({ field }) => (
-                                            <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel className="text-base">Currently Watching</FormLabel>
-                                                    <FormDescription>You are currently watching this</FormDescription>
-                                                </div>
+                                            <FormItem>
                                                 <FormControl>
-                                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => field.onChange(!field.value)}
+                                                        className={`flex items-center gap-2 rounded-lg px-4 py-2 w-full justify-center ${field.value
+                                                            ? "bg-green-700 hover:bg-green-600"
+                                                            : "bg-green-400 hover:bg-green-600"
+                                                            } text-white transition-colors`}
+                                                    >
+                                                        <Eye className="w-4 h-4" />
+                                                        {mediaType === "book" ? "Reading" : mediaType === "movie" || "series" ? "Watching" : "Playing"}
+                                                        <Check className={field.value ? 'w-4 h-4' : 'hidden'} />
+                                                    </button>
                                                 </FormControl>
                                             </FormItem>
                                         )}
                                     />
                                 </div>
+                            </div>
+
+                            <div className="my-4">
+                                <FormField
+                                    control={form.control}
+                                    name="timesWatched"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => field.onChange((field.value || 0) + 1)}
+                                                    className="flex items-center gap-2 rounded-lg px-4 py-2 w-full justify-center bg-purple-600 hover:bg-purple-500 text-white transition-colors"
+                                                >
+                                                    <Plus className="w-4 h-4" />
+                                                    Add {mediaType === "book" ? "Read" : mediaType === "game" ? "Played" : "Watched"} Entry
+                                                </button>
+                                            </FormControl>
+                                            <div className="space-y-4 mt-4">
+                                                {[...Array(field.value || 0)].map((_, index) => (
+                                                    <div key={index} className="space-y-4 p-4 border rounded-lg">
+                                                        <div className="flex justify-between items-center">
+                                                            <h3 className="font-bold">{mediaType === "book" ? "Read" : mediaType === "game" ? "Played" : "Watched"} Entry {index + 1}</h3>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newValue = Math.max(0, (field.value || 0) - 1);
+                                                                    field.onChange(newValue);
+
+                                                                    // Shift all entries up to remove the current one
+                                                                    const watchLog = form.getValues().watchLog || [];
+                                                                    if (watchLog.length > index) {
+                                                                        const newWatchLog = [
+                                                                            ...watchLog.slice(0, index),
+                                                                            ...watchLog.slice(index + 1)
+                                                                        ];
+                                                                        form.setValue('watchLog', newWatchLog);
+                                                                    }
+                                                                }}
+                                                                className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors"
+                                                            >
+                                                                <X className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
+                                                        <div className="flex flex-col md:flex-row gap-4">
+                                                            <FormField
+                                                                control={form.control}
+                                                                name={`watchLog.${index}.startDate`}
+                                                                render={({ field }) => (
+                                                                    <FormItem className="flex-1">
+                                                                        <FormLabel>{mediaType === "movie" ? "Watched Date" : "Start Date"}</FormLabel>
+                                                                        <FormControl>
+                                                                            <Input
+                                                                                type="date"
+                                                                                {...field}
+                                                                                value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
+                                                                                onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                                                                            />
+                                                                        </FormControl>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                            {mediaType !== "movie" && <FormField
+                                                                control={form.control}
+                                                                name={`watchLog.${index}.endDate`}
+                                                                //name="startedWatching"
+                                                                render={({ field }) => (
+                                                                    <FormItem className="flex-1">
+                                                                        <FormLabel>End Date</FormLabel>
+                                                                        <FormControl>
+                                                                            <Input
+                                                                                type="date"
+                                                                                {...field}
+                                                                                value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
+                                                                                onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                                                                            />
+                                                                        </FormControl>
+                                                                    </FormItem>
+                                                                )}
+                                                            />}
+                                                        </div>
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`watchLog.${index}.notes`}
+                                                            render={({ field }) => (
+                                                                <FormItem>
+                                                                    <FormLabel>Notes</FormLabel>
+                                                                    <FormControl>
+                                                                        <Textarea
+                                                                            placeholder="Add any notes about this watch..."
+                                                                            {...field}
+                                                                        />
+                                                                    </FormControl>
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
 
                             <Separator />

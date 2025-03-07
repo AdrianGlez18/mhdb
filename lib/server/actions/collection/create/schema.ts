@@ -28,4 +28,9 @@ export const CollectionItemZodSchema = z.object({
     author: z.string().optional(),
     platform: z.string().optional(),
     contentType: z.enum(["movie", "series", "book", "game"]),
+    watchLog: z.array(z.object({
+        startDate: z.date(),
+        endDate: z.date(),
+        notes: z.string()
+    })).optional()
 })

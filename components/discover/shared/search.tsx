@@ -48,7 +48,7 @@ export const Search = ({ contentType }: { contentType: string }) => {
     return (
 
         <div className="my-4 w-full flex items-center justify-center">
-            <div className="flex items-center content-center text-center justify-center w-1/2 lg:w-1/3">
+            <div className="flex items-center content-center text-center justify-center w-[90%] lg:w-1/2 gap-2">
                 <Input
                     type="search"
                     onChange={(e) => { if (e.target.value.length > 2) { setQuery(e.target.value) } }}

@@ -21,6 +21,8 @@ model PrismaUser {
   profile        Profile?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+
+  ContentView ContentView[]
 }
 
 model Profile {
@@ -123,6 +125,17 @@ model Review {
   user          PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
 
   @@unique(name: "unique_review_for_user_and_content", fields: [userId, contentId, contentType])
+}
+
+model ContentView {
+  id            String     @id @default(cuid())
+  apiId         String
+  startDate     DateTime?
+  endDate       DateTime?
+  notes         String?
+
+  userId        String
+  user          PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
 }
 
 enum ContentType {

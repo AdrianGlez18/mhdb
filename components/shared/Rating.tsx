@@ -4,8 +4,8 @@ const Rating = ({ rating, setRating }: any) => {
     const chosenStyles = `bg-blue-500 text-white`;
 
     return (
-        <div className='w-11/12 mobile:w-1/4 bg-medium-dark-blue p-4 flex flex-col rounded-3xl gap-5 '>
-            <div className='relative w-full h-12 flex justify-around'>
+        <div className='w-11/12 bg-medium-dark-blue p-4 flex flex-col rounded-3xl gap-5 '>
+            <div className='relative w-full h-24 md:h-12 grid grid-cols-5 md:grid-cols-10 justify-around'>
                 {
                     [...Array(parseInt(rating))].map((rate, index) => <img
                         key={index}
@@ -16,7 +16,7 @@ const Rating = ({ rating, setRating }: any) => {
                 }
             </div>
 
-            <div className='flex justify-around'>
+            <div className='grid grid-cols-5 md:grid-cols-10 justify-around'>
                 {[...Array(10)].map((rate, index) => {
                     index += 1;
                     return (

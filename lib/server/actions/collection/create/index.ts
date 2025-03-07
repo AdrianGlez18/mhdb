@@ -36,7 +36,8 @@ const create = async (data: InputType): Promise<OutputType> => {
         contentType, 
         startedWatching, 
         completedWatching,
-        overview
+        overview,
+        watchLog
     } = data; 
 
     let newContent;
@@ -70,6 +71,29 @@ const create = async (data: InputType): Promise<OutputType> => {
     } catch (error) {
         return {
             error: "Internal database error"
+        }
+    }
+
+    console.log("Watchlog: ", watchLog)
+    if (watchLog && watchLog.length > 0) {
+        console.log("Watchlog: ", watchLog)
+        try {
+            // Create content views for each watch log entry
+            await Promise.all(
+                watchLog.map(async (log) => {
+                    await db.contentView.create({
+                        data: {
+                            userId,
+                            apiId,
+                            startDate: log.startDate,
+                            endDate: log.endDate,
+                            notes: log.notes || ""
+                        }
+                    });
+                })
+            );
+        } catch (error) {
+            console.error("Error creating content views:", error);
         }
     }
 

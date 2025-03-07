@@ -39,7 +39,7 @@ const SearchResults = ({ content, totalPages, page, contentType }: { content: an
     let rating = '0'; */
     return (
         <>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 max-w-6xl mx-auto py-4 overflow-x-hidden content-center justify-center">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 max-w-6xl mx-auto py-4 overflow-x-hidden content-center justify-center">
             {
                 content.map((item: any) => {
                     id = item.id/* .toString() */;
@@ -69,7 +69,7 @@ const SearchResults = ({ content, totalPages, page, contentType }: { content: an
                   <PaginationPrevious className="hover:bg-transparent hover:text-white" onClick={() => onPageChange("prev")}/>
                 </Button>
     
-                <p className="flex-center p-16-medium w-fit flex-1">
+                <p className="text-center p-16-medium w-fit flex-1">
                   {page} / {totalPages}
                 </p>
     
