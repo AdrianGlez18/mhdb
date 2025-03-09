@@ -170,23 +170,6 @@ export const getTwitchAccessToken = cache(async () => {
   return data.access_token;
 });
 
-export async function setTwitchAccessToken(token: string) {
-  cookies().set('igdb_access_token', token, { secure: true, httpOnly: true, maxAge: 60 * 60 * 24 }); //Expires every day
-}
-
-export async function getTwitchAccessTokenFromStorage() {
-  return cookies().get('igdb_access_token')?.value;
-}
-
-export async function ensureTwitchAccessToken() {
-  let token = await getTwitchAccessTokenFromStorage();
-  if (!token) {
-    token = await getTwitchAccessToken();
-    await setTwitchAccessToken(token!);
-  }
-  return token;
-}
-
 export const getTrendingGames = cache(async (token: string) => {
   const response = await fetch('https://api.igdb.com/v4/games', {
     method: 'POST',
