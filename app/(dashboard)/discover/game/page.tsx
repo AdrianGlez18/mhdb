@@ -1,7 +1,7 @@
 import { Search } from "@/components/discover/shared/search";
 import SearchResults from "@/components/discover/shared/search-results";
 import PageUnderDevelopment from "@/components/shared/page-under-development"
-import { getTrendingGames, getTwitchAccessToken } from "@/lib/server/discover";
+import { getTrendingGames, getTwitchAccessToken, searchGameByTitle } from "@/lib/server/discover";
 
 interface SearchParamProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -10,9 +10,7 @@ interface SearchParamProps {
 const DiscoverGamesPage = async ({ searchParams }: SearchParamProps) =>{
   const page = Number(searchParams?.page) || 0;
   const searchQuery = (searchParams?.query as string) || '';
-  //todo make search work
-  const token = await getTwitchAccessToken();
-  const result = await getTrendingGames(token/* searchQuery, page */);
+  const result = await searchGameByTitle(searchQuery);
   
   return (
     <main className="w-full min-h-screen bg-background p-6">

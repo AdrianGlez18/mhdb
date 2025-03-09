@@ -10,8 +10,8 @@ const AuthCallbackPage = () => {
     const supabase = createClient();
     const router = useRouter();
 
-    const { execute, fieldErrors } = useAction(findProfile, {
-        onSuccess: (data) => {
+    const { execute } = useAction(findProfile, {
+        onSuccess: () => {
             router.push('/discover');
         },
         onError: (error) => {
@@ -20,7 +20,6 @@ const AuthCallbackPage = () => {
     });
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log(event, session)
             if (session?.user) {
                 await execute({ userId: session.user.id });
                 router.push('/profile/edit')

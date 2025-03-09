@@ -77,7 +77,7 @@ export default function ResultsCard({
 
   const imageUrl = contentType === 'book'
     ? content.volumeInfo.imageLinks?.thumbnail : contentType === 'game' 
-    ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${content.cover.image_id}.jpg` :  `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`;
+    ? (content.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${content.cover.image_id}.jpg` : '') :  `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`;
   const title = contentType === 'book' 
   ? content.volumeInfo.title : (content.title || content.name)
 
