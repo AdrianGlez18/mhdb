@@ -2,15 +2,15 @@
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import DiscoverCard from "@/components/discover/book/discover-book-card"
+import DiscoverCard from "@/components/discover/game/discover-game-card"
 
 interface DiscoverSectionProps {
   title: string
-  content: (any)[]
+  content: any[]
   viewAllHref: string
 }
 
-export default function DiscoverBookSection({ title, content, viewAllHref }: DiscoverSectionProps) {
+export default function DiscoverGameSection({ title, content, viewAllHref }: DiscoverSectionProps) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">

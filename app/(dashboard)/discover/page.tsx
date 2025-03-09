@@ -1,11 +1,8 @@
-//"use client"
-
 import Hero from "@/components/discover/shared/hero"
 import DiscoverSection from "@/components/discover/shared/discover-section"
-import { useContent } from "@/components/context/discover-context"
-import { Skeleton } from "@/components/ui/skeleton"
 import DiscoverBookSection from "@/components/discover/book/discover-book-section"
-import { getBookList, getTMDBTrailer, getTMDBTrendingList } from "@/lib/server/discover"
+import { getBookList, getTMDBTrailer, getTMDBTrendingList, getTrendingGames, getTwitchAccessToken } from "@/lib/server/discover"
+import DiscoverGameSection from "@/components/discover/game/discover-game-section"
 
 export default async function Home() {
 
@@ -28,8 +25,14 @@ export default async function Home() {
   const responsePromise = getTMDBTrendingList('movie', 1);
   const responseTvPromise = getTMDBTrendingList('tv', 1);
   const responseBookPromise = getBookList();
+  const responseTwitchAccessToken = getTwitchAccessToken();
 
-  const [movieList, seriesList, bookList] = await Promise.all([responsePromise, responseTvPromise, responseBookPromise]);
+
+  const [movieList, seriesList, bookList, accessToken] = await Promise.all(
+    [responsePromise, responseTvPromise, responseBookPromise, responseTwitchAccessToken]
+  );
+
+  const gameList = await getTrendingGames(accessToken);
 
   const firstMovie = movieList.results[0];
 
@@ -51,7 +54,7 @@ export default async function Home() {
         <DiscoverSection
           title="Trending Movies"
           content={movieList.results}
-          viewAllHref="/discover/movies"
+          viewAllHref="/discover/movie"
         />
 
         <DiscoverSection
@@ -64,6 +67,12 @@ export default async function Home() {
           title="Some interesting books"
           content={bookList.items}
           viewAllHref="/discover/book"
+        />
+
+        <DiscoverGameSection
+          title="Top Rated Games"
+          content={gameList}
+          viewAllHref="/discover/game"
         />
 
         {/* <DiscoverSection

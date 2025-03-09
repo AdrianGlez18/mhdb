@@ -42,9 +42,8 @@ export default function ProfileForm() {
   });
 
   async function onSubmit(data: z.infer<typeof ProfileZodSchema>) {
-    console.log("onSubmit")
-    setIsSubmitting(true)
 
+    setIsSubmitting(true)
 
     const newProfile = {
       username: data.username,

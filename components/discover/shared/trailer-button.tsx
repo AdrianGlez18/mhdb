@@ -15,7 +15,6 @@ interface TrailerButtonProps {
     setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 const TrailerButton = ({ title, description, youtubeKey, isDialogOpen, setIsDialogOpen }: TrailerButtonProps) => {
-    console.log(youtubeKey)
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>

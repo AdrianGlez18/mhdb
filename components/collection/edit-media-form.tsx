@@ -1,14 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Book, Bookmark, Check, Eye, Home, Plus, Star, X } from "lucide-react"
+import { ArrowLeft, Book, Bookmark, Check, Eye, Home, Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -20,7 +19,7 @@ import { createCollectionItem } from "@/lib/server/actions/collection/create"
 import { CollectionItemZodSchema } from "@/lib/server/actions/collection/create/schema"
 import { updateCollectionItem } from "@/lib/server/actions/collection/update"
 import Rating from "@/components/shared/Rating"
-import { useProfile } from "../context/profile-context"
+
 
 export type ActionType = "add" | "update";
 export type MediaType = "movie" | "series" | "book" | "game";
@@ -33,9 +32,7 @@ interface EditMovieFormProps {
 
 const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps) => {
 
-    //const { profile, loading: profileLoading } = useProfile();
     const router = useRouter()
-    const { refreshed, setRefreshed } = useProfile();
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [rating, setRating] = useState(defaultValues.userRating || 0)
     //const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -54,7 +51,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
         onSuccess: (data) => {
             console.log(data);
             toast.success('Content created successfully!');
-            setRefreshed(true);
+            //setRefreshed(true);
         },
         onError: () => {
             console.log(createFieldErrors);
@@ -65,7 +62,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
     const { execute: executeUpdate, fieldErrors: updateFieldErrors } = useAction(updateCollectionItem, {
         onSuccess: (data) => {
             toast.success('Content updated successfully!');
-            setRefreshed(true);
+            //setRefreshed(true);
         },
         onError: () => {
             toast.error("Error while updating content");

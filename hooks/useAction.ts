@@ -22,14 +22,12 @@ export const useAction = <TInput, TOutput>(
     const execute = useCallback(async (input: TInput) => {
         setIsLoading(true);
         try {
-            console.log("trying to execute action");
             const result = await action(input);
-            console.log(result);
 
-            if (!result || !result.data) {
+            /* if (!result || !result.data || !result.error) {
                 console.log("no result");
                 return;
-            }
+            } */
 
             setFieldErrors(result.fieldErrors);
 

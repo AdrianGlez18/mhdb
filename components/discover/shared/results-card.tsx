@@ -68,16 +68,18 @@ export default function ResultsCard({
 
   const onAddToCollection = () => {
     setIsSubmitting(true);
-    console.log(content)
     executeCheck({
       apiId: content.id.toString(),
-      contentType: content.media_type === 'movie' ? 'movie' : 'series',
+      contentType: contentType,
     });
     setIsSubmitting(false);
   }
 
-  const imageUrl = contentType === 'book' ? content.volumeInfo.imageLinks?.thumbnail : `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`
-  const title = contentType === 'book' ? content.volumeInfo.title : (content.title || content.name)
+  const imageUrl = contentType === 'book'
+    ? content.volumeInfo.imageLinks?.thumbnail : contentType === 'game' 
+    ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${content.cover.image_id}.jpg` :  `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`;
+  const title = contentType === 'book' 
+  ? content.volumeInfo.title : (content.title || content.name)
 
   return (
     <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-lg">
@@ -128,8 +130,8 @@ export default function ResultsCard({
                 asChild
               >
                 <Link href={`/discover/${contentType}/${content.id}`}>
-                <Info className="h-5 w-5" />
-                <span className="sr-only">View details</span>
+                  <Info className="h-5 w-5" />
+                  <span className="sr-only">View details</span>
                 </Link>
               </Button>
             </TooltipTrigger>

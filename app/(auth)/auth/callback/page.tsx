@@ -12,25 +12,17 @@ const AuthCallbackPage = () => {
 
     const { execute, fieldErrors } = useAction(findProfile, {
         onSuccess: (data) => {
-            console.log("inside onSUccess ", data);
             router.push('/discover');
         },
         onError: (error) => {
-            console.log("inside onError");
+            console.log(error);
         }
     });
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             console.log(event, session)
-            if (event === 'SIGNED_IN' && session?.user) {
-                console.log("inside if")
-                /* const { data } = await supabase
-                    .from('Profile')
-                    .select()
-                    .eq('userId', session.user.id); */
-
-                const data = await execute({ userId: session.user.id });
-                console.log("after execute", data);
+            if (session?.user) {
+                await execute({ userId: session.user.id });
                 router.push('/profile/edit')
             }
         });

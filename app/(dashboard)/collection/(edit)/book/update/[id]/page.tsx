@@ -17,6 +17,7 @@ export default function UpdateBookPage({ params }: AddBookPageProps) {
   const router = useRouter()
   const [defaultValues, setDefaultValues] = useState<any>();
 //todo fix tags and dates
+//todo remove use profile
   useEffect(() => {
     if(!loading) {
       let book = profile?.collection.find((book: any) => book.apiId === id);

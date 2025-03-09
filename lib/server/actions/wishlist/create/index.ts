@@ -51,7 +51,6 @@ const create = async (data: InputType): Promise<OutputType> => {
             }
         })
     } catch (error) {
-        console.log(error);
         return {
             error: "Internal database error"
         }

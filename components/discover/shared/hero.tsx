@@ -13,7 +13,7 @@ import TrailerButton from './trailer-button'
 
 export default function Hero({ trailer }: { trailer: any }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log(trailer)
+
   return (
     <div className="relative h-[60vh] min-h-[500px] w-full overflow-hidden rounded-lg">
       <img

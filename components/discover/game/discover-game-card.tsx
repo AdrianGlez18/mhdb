@@ -26,26 +26,23 @@ interface DiscoverCardProps {
 
 
 
-export default function BookDiscoverCard({
+export default function GameDiscoverCard({
   content,
   onViewDetails,
   onBuy
 }: DiscoverCardProps) {
 
-
   const router = useRouter();
 
-  const book = {
+  const game = {
     id: content.id,
-    title: content.volumeInfo.title,
-    imageUrl: content.volumeInfo.imageLinks?.thumbnail,
-    author: content.volumeInfo.authors?.[0],
-
+    title: content.name,
+    imageUrl: `https://images.igdb.com/igdb/image/upload/t_cover_big/${content.cover.image_id}.jpg`,
   }
 
   const { execute: executeCheck } = useAction(checkItemInCollection, {
     onSuccess: (data) => {
-      router.push(`/collection/book/add/${data.apiId}`);
+      router.push(`/collection/game/add/${data.apiId}`);
     },
     onError: (error) => {
       toast.error(`Error: ${error}`);
@@ -63,17 +60,17 @@ export default function BookDiscoverCard({
 
   const onAddToWishlistList = () => {
     executeCreate({
-      apiId: book.id,
-      title: book.title,
-      imageUrl: book.imageUrl,
-      contentType: 'book'
+      apiId: game.id,
+      title: game.title,
+      imageUrl: game.imageUrl,
+      contentType: 'game'
     });
   }
 
   const onAddToCollection = () => {
     executeCheck({
       apiId: content.id.toString(),
-      contentType: 'book'
+      contentType: 'game',
     });
   }
 
@@ -81,17 +78,17 @@ export default function BookDiscoverCard({
     <Card className="w-[200px] overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
-          <Link href={`/discover/book/${book.id}`}>
+          <Link href={`/discover/game/${game.id}`}>
             <img
-              src={book.imageUrl}
-              alt={book.title}
+              src={game.imageUrl}
+              alt={game.title}
               className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
             />
           </Link>
         </div>
       </CardHeader>
       <CardContent className="p-4 h-24 flex flex-col items-center justify-center">
-        <h3 className="text-xl font-bold text-center line-clamp-2">{book.title}</h3>
+        <h3 className="text-xl font-bold text-center line-clamp-2">{game.title}</h3>
       </CardContent>
       <CardFooter className="flex justify-center gap-4 p-4 pt-0">
         <TooltipProvider>
@@ -114,7 +111,7 @@ export default function BookDiscoverCard({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href={`/discover/book/${book.id}`} passHref>
+              <Link href={`/discover/game/${game.id}`} passHref>
                 <Button
                   variant="outline"
                   size="icon"
@@ -146,23 +143,6 @@ export default function BookDiscoverCard({
               <p>Add to collection</p>
             </TooltipContent>
           </Tooltip>
-
-          {/* <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="default"
-                size="icon"
-                onClick={() => onBuy?.(content.id!)}
-                className="aspect-square"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">Check shop</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Check shop</p>
-            </TooltipContent>
-          </Tooltip> */}
         </TooltipProvider>
       </CardFooter>
     </Card>

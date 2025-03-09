@@ -24,19 +24,15 @@ import { useRouter } from "next/navigation"
 import { useAction } from "@/hooks/useAction"
 import { deleteCollectionItem } from "@/lib/server/actions/collection/delete"
 import { toast } from "sonner"
-import { useProfile } from "@/components/context/profile-context"
 import { deleteWishlistItem } from "@/lib/server/actions/wishlist/delete"
 import Link from "next/link"
 
 const CollectionCard = ({ item }: { item: CollectionItem }) => {
     const router = useRouter()
-    const { setRefreshed } = useProfile();
 
     const { execute: executeDeleteFromCollection, fieldErrors: deleteFieldErrors } = useAction(deleteCollectionItem, {
         onSuccess: (data) => {
-            console.log(data);
             toast.success('Content deleted successfully!');
-            setRefreshed(true);
             
         },
         onError: (error) => {
@@ -49,7 +45,6 @@ const CollectionCard = ({ item }: { item: CollectionItem }) => {
         onSuccess: (data) => {
             console.log(data);
             toast.success('Content deleted successfully!');
-            setRefreshed(true);
             
         },
         onError: (error) => {

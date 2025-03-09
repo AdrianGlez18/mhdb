@@ -27,45 +27,45 @@ interface DiscoverCardProps {
 
 
 
-export default function DiscoverCard({ 
-content,
-  onViewDetails, 
-  onBuy 
+export default function DiscoverCard({
+  content,
+  onViewDetails,
+  onBuy
 }: DiscoverCardProps) {
 
   const router = useRouter();
 
   const { execute: executeAddWish, fieldErrors: addWishFieldErrors } = useAction(createWishlistItem, {
     onSuccess: (data) => {
-        toast.success('Content wishlisted successfully!');
+      toast.success('Content wishlisted successfully!');
     },
     onError: (error) => {
-        toast.error(`Error while wishlisting content: ${error}`);
+      toast.error(`Error while wishlisting content: ${error}`);
     }
-});
+  });
 
-const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(checkItemInCollection, {
-  onSuccess: (data) => {
-    const contentType = content.media_type === 'movie' ? 'movie' : 'series';
-    router.push(`/collection/${contentType}/add/${data.apiId}`);
-  },
-  onError: (error) => {
+  const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(checkItemInCollection, {
+    onSuccess: (data) => {
+      const contentType = content.media_type === 'movie' ? 'movie' : 'series';
+      router.push(`/collection/${contentType}/add/${data.apiId}`);
+    },
+    onError: (error) => {
       toast.error(`Error: ${error}`);
-  }
-});
+    }
+  });
 
   const onAddToWishlistList = () => {
-    executeAddWish({ 
-      apiId: content.id.toString(), 
-      title: (content.title || content.name || ''), 
-      imageUrl: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`, 
+    executeAddWish({
+      apiId: content.id.toString(),
+      title: (content.title || content.name || ''),
+      imageUrl: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`,
       contentType: content.media_type === 'movie' ? 'movie' : 'series',
     });
   }
 
   const onAddToCollection = () => {
-    executeCheck({ 
-      apiId: content.id.toString(), 
+    executeCheck({
+      apiId: content.id.toString(),
       contentType: content.media_type === 'movie' ? 'movie' : 'series',
     });
   }
@@ -75,11 +75,11 @@ const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(chec
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
           <Link href={`/discover/${content.media_type === 'movie' ? 'movie' : 'series'}/${content.id}`}>
-          <img
-            src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`}
-            alt={`${content.title} poster`}
-            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-          />
+            <img
+              src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`}
+              alt={`${content.title} poster`}
+              className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+            />
           </Link>
           <div className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-sm font-bold text-white">
             {content.vote_average ? Math.round(content.vote_average * 10) / 10 : '¿?'}/10
@@ -110,15 +110,15 @@ const { execute: executeCheck, fieldErrors: createFieldErrors } = useAction(chec
 
           <Tooltip>
             <TooltipTrigger asChild>
-            <Link href={`/discover/${content.media_type === 'movie' ? 'movie' : 'series'}/${content.id}`} passHref>
-              <Button
-                variant="outline"
-                size="icon"
-                className="aspect-square"
-              >
-                <Info className="h-5 w-5" />
-                <span className="sr-only">View details</span>
-              </Button>
+              <Link href={`/discover/${content.media_type === 'movie' ? 'movie' : 'series'}/${content.id}`} passHref>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="aspect-square"
+                >
+                  <Info className="h-5 w-5" />
+                  <span className="sr-only">View details</span>
+                </Button>
               </Link>
             </TooltipTrigger>
             <TooltipContent>
