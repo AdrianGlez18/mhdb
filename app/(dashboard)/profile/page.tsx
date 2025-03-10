@@ -1,14 +1,24 @@
-"use client"
+/* "use client" */
 
-import { useProfile } from "@/components/context/profile-context";
+/* import { useProfile } from "@/components/context/profile-context"; */
 import ProfileContent from "@/components/profile/profile-content";
+import { findUserProfile, getUserId, getUsername } from "@/lib/server/discover";
+import { notFound } from "next/navigation";
 
-export default function ProfilePage() {
-    const { profile, loading: profileLoading } = useProfile();
+const ProfilePage = async () => {
+    /* const { profile, loading: profileLoading } = useProfile(); */
 
-    if (profileLoading) {
+    /* if (profileLoading) {
         return <div>Loading...</div>;
+    } */
+    const username = await getUsername();
+
+    if (!username || !username.data) {
+        return notFound();
     }
 
+    const profile = await findUserProfile(username.data!);
     return <ProfileContent profileType="user" profile={profile} />;
 }
+
+export default ProfilePage;

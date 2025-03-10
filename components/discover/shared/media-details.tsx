@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, BookmarkPlus, Play, Star } from 'lucide-react'
+import { ArrowLeft, BookmarkPlus, Play, Star, PenLine } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -14,6 +14,8 @@ import { toast } from "sonner"
 import { useEffect, useState } from "react"
 import { useProfile } from "@/components/context/profile-context"
 import TrailerButton from "./trailer-button"
+import ReviewForm from "@/components/review/ReviewForm"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 //import MovieRecommendations from "@/components/movie-recommendations"
 
 export default function MediaDetails({ content }: { content: any }) {
@@ -22,6 +24,7 @@ export default function MediaDetails({ content }: { content: any }) {
     const { profile, loading } = useProfile();
     const [isIncollection, setIsIncollection] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
     useEffect(() => {
         if (!loading && profile && profile.collection) {
@@ -164,10 +167,24 @@ export default function MediaDetails({ content }: { content: any }) {
                                 <BookmarkPlus className="mr-2 h-4 w-4" />
                                 Add to Wishlist
                             </Button>
-                            <Button className="w-full" disabled>
-                                <BookmarkPlus className="mr-2 h-4 w-4" />
-                                Write a review (soon)
-                            </Button>
+                            <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button className="w-full">
+                                        <PenLine className="mr-2 h-4 w-4" />
+                                        Write a review
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[500px]">
+                                    <h2 className="text-xl font-bold mb-4">Review {media.title}</h2>
+                                    {profile && (
+                                        <ReviewForm 
+                                            contentId={media.id.toString()} 
+                                            userId={profile.id} 
+                                            contentType={content.media_type === 'movie' ? 'movie' : 'series'} 
+                                        />
+                                    )}
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
 
@@ -225,4 +242,3 @@ export default function MediaDetails({ content }: { content: any }) {
         </main>
     )
 }
-

@@ -32,12 +32,25 @@ model Profile {
   imageUrl      String?
   country       String?
   language      String?
-  reviews       Review[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   userId String @unique
   user   PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+
+  following     Following[] @relation("Following")
+  followers     Following[] @relation("Followers")
+}
+
+model Following {
+  followerId  String
+  followedId  String
+  createdAt   DateTime @default(now())
+
+  follower    Profile @relation("Followers", fields: [followerId], references: [id])
+  followed    Profile @relation("Following", fields: [followedId], references: [id])
+
+  @@id([followerId, followedId])
 }
 
 model Movie {
@@ -117,9 +130,6 @@ model Review {
   language      String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-
-  username      String
-  profile       Profile @relation(fields: [username], references: [userId], onDelete: Cascade)
 
   userId        String
   user          PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)

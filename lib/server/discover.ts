@@ -2,7 +2,112 @@
 
 import { cookies } from "next/headers";
 import { cache } from "react";
+import { db } from "./db";
+import { createClient } from "../supabase/server";
+//todo probar y crear una para el perfil propio. Intentar usarlo en collectin
 
+export const getUserId = cache(async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user || !user.id) {
+    return {
+      error: "Unauthorized"
+    }
+  }
+
+  const userId = user.id;
+  return userId;
+})
+
+export const getUsername = cache(async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user || !user.id) {
+    return {
+      error: "Unauthorized"
+    }
+  }
+
+  const userId = user.id;
+
+  const profile = await db.profile.findUnique({
+    where: {
+      userId
+    }
+  });
+
+  if (!profile || !profile.username) {
+    return {
+      error: "Profile not found"
+    }
+  }
+
+  return {
+    data: profile.username
+  };
+})
+
+
+export const findUserProfile = cache(async (username: string) => {
+  if (!username) {
+    return {
+      error: "No username provided"
+    };
+  };
+
+  const profile = await db.profile.findUnique({
+    where: {
+      username
+    },
+    include: {
+      user: {
+        include: {
+          collection: true,
+          reviews: true
+        }
+      },
+      following: true,
+      followers: true
+    }
+  });
+
+  if (!profile) {
+    return {
+      error: "Profile not found"
+    }
+  };
+
+  if (profile && profile.isPublic) {
+    const favoriteItems = profile.user.collection.filter((item => item.isFavorited));
+    return {
+      isPublic: profile.isPublic,
+      username: profile.username,
+      profileImg: profile.imageUrl,
+      collection: favoriteItems,
+      following: profile.following,
+      followers: profile.followers
+    }
+  } else if (profile && !profile.isPublic) {
+    return {
+      isPublic: profile.isPublic,
+      username: profile.username,
+      profileImg: profile.imageUrl,
+      followingCount: profile.following.length,
+      followersCount: profile.followers.length
+    }
+  };
+
+  return {
+    error: "Unknown database error",
+  };
+
+});
 
 export const getTMDBTrendingList = cache(async (contentType: string, page: number) => {
   //TODO Add labguage support
@@ -214,7 +319,7 @@ export const searchGameByTitle = cache(async (title: string) => {
 });
 
 
-export const getGameById = cache( async (id: number) => {
+export const getGameById = cache(async (id: number) => {
   const token = await getTwitchAccessToken();
   const response = await fetch('https://api.igdb.com/v4/games', {
     method: 'POST',
