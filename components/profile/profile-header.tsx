@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
+import FollowButton from "./follow-button"
 
 interface ProfileHeaderProps {
+  userId: string
+  profileUserId: string
+  isFollowing: boolean
   username: string
   avatarUrl: string
   bio: string
@@ -10,7 +14,8 @@ interface ProfileHeaderProps {
   followers: number
 }
 
-export default function ProfileHeader({ username, avatarUrl, bio, following, followers }: ProfileHeaderProps) {
+export default function ProfileHeader({ userId, profileUserId, isFollowing, username, avatarUrl, bio, following, followers }: ProfileHeaderProps) {
+  console.log(userId, profileUserId, isFollowing)
   return (
     <Card className="overflow-hidden">
       <div className="h-32 bg-gradient-to-r from-primary to-primary-foreground/20" />
@@ -26,7 +31,9 @@ export default function ProfileHeader({ username, avatarUrl, bio, following, fol
             <h1 className="text-2xl font-bold">{username}</h1>
             <p className="text-muted-foreground">{bio}</p>
           </div>
-          <Button>Follow</Button>
+          {
+            userId !== profileUserId && <FollowButton followerId={userId} followedId={profileUserId} following={isFollowing}/>
+          }
         </div>
         <div className="flex gap-4 text-sm">
           <div>

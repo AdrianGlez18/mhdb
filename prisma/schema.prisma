@@ -43,14 +43,15 @@ model Profile {
 }
 
 model Following {
+  id            String     @id @default(cuid())
   followerId  String
   followedId  String
   createdAt   DateTime @default(now())
 
-  follower    Profile @relation("Followers", fields: [followerId], references: [id])
-  followed    Profile @relation("Following", fields: [followedId], references: [id])
+  follower    Profile @relation("Following", fields: [followerId], references: [id])
+  followed    Profile @relation("Followers", fields: [followedId], references: [id])
 
-  @@id([followerId, followedId])
+  @@unique(name: "unique_follower_to_followed", fields: [followerId, followedId])
 }
 
 model Movie {

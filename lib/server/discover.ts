@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import { db } from "./db";
 import { createClient } from "../supabase/server";
-//todo probar y crear una para el perfil propio. Intentar usarlo en collectin
+//todo Intentar usarlo en collection
 
 export const getUserId = cache(async () => {
   const supabase = await createClient();
@@ -13,13 +13,36 @@ export const getUserId = cache(async () => {
   } = await supabase.auth.getUser();
 
   if (!user || !user.id) {
-    return {
-      error: "Unauthorized"
-    }
+    return undefined;
   }
 
   const userId = user.id;
   return userId;
+})
+
+export const getUserProfile = cache(async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user || !user.id) {
+    return undefined;
+  }
+
+  const userId = user.id;
+
+  const profile = await db.profile.findFirst({
+    where: {
+      userId
+    }
+  })
+
+  if (!profile || !profile.id) {
+    return undefined;
+  }
+
+  return profile;
 })
 
 export const getUsername = cache(async () => {
@@ -53,8 +76,31 @@ export const getUsername = cache(async () => {
   };
 })
 
+export const getIfFollowing = async (followerId: string, followedId: string) => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export const findUserProfile = cache(async (username: string) => {
+  if (!user || !user.id) {
+    return false
+  }
+
+  const userId = user.id;
+
+  const result = await db.following.findFirst({
+    where: {
+      followerId,
+      followedId
+    }
+  });
+
+  if (!result) return false;
+
+  return true;
+};
+
+export const findUserProfileByUsername = cache(async (username: string) => {
   if (!username) {
     return {
       error: "No username provided"
@@ -86,6 +132,7 @@ export const findUserProfile = cache(async (username: string) => {
   if (profile && profile.isPublic) {
     const favoriteItems = profile.user.collection.filter((item => item.isFavorited));
     return {
+      id: profile.id,
       isPublic: profile.isPublic,
       username: profile.username,
       profileImg: profile.imageUrl,
@@ -95,6 +142,7 @@ export const findUserProfile = cache(async (username: string) => {
     }
   } else if (profile && !profile.isPublic) {
     return {
+      id: profile.id,
       isPublic: profile.isPublic,
       username: profile.username,
       profileImg: profile.imageUrl,

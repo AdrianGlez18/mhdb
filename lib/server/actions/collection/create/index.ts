@@ -5,6 +5,7 @@ import { db } from "@/lib/server/db";
 import { CollectionItemZodSchema } from "./schema";
 import { createSafeAction } from "@/lib/server/createSafeAction";
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 const create = async (data: InputType): Promise<OutputType> => {
     const supabase = await createClient();
@@ -96,6 +97,8 @@ const create = async (data: InputType): Promise<OutputType> => {
             console.error("Error creating content views:", error);
         }
     }
+
+    revalidatePath("/collection");
 
     return { data: newContent }
 }

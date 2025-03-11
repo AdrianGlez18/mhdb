@@ -2,10 +2,22 @@ import { ProfileContentItem } from "@/types";
 import DiscoverSection from "../discover/shared/discover-section";
 import ProfileHeader from "./profile-header";
 import ProfileSection from "./profile-section";
+import { getIfFollowing, getUserId, getUserProfile } from "@/lib/server/discover";
+import { redirect } from "next/navigation";
 
 type ProfileType = "user" | "external"
 
-const ProfileContent = ({ profileType, profile }: { profileType: ProfileType, profile: any }) => {
+const ProfileContent = async ({ profileType, profile }: { profileType: ProfileType, profile: any }) => {
+
+    const user = await getUserProfile();
+
+    if (!user || !user?.id) {
+        redirect("/");
+    }
+
+    const userId = user.id;
+    const profileUserId = profile.id;
+    const isFollowing = await getIfFollowing(userId, profileUserId);
 
     const isUserProfile = profileType === "user";
 
@@ -57,8 +69,11 @@ const ProfileContent = ({ profileType, profile }: { profileType: ProfileType, pr
                         username={profile.username}
                         avatarUrl={profile.imageUrl}
                         bio={profile.bio}
-                        following={profile.following}
-                        followers={profile.followers}
+                        following={profile.following.length}
+                        followers={profile.followers.length}
+                        userId={userId}
+                        profileUserId={profileUserId}
+                        isFollowing={isFollowing}
                     />
 
                     {favoriteMovies.length > 0 && <ProfileSection title="Favorite Movies" content={favoriteMovies} contentType="movie" />}
@@ -77,8 +92,11 @@ const ProfileContent = ({ profileType, profile }: { profileType: ProfileType, pr
                     username={profile.username}
                     avatarUrl={profile.imageUrl}
                     bio={profile.bio}
-                    following={profile.following}
-                    followers={profile.followers}
+                    following={profile.following.length}
+                    followers={profile.followers.length}
+                    userId={userId}
+                    profileUserId={profileUserId}
+                    isFollowing={isFollowing}
                 />
 
                 <div className="flex items-center justify-center text-muted-foreground text-lg">

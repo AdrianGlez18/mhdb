@@ -5,6 +5,7 @@ import { db } from "@/lib/server/db";
 import { CollectionItemZodSchema } from "./schema";
 import { createSafeAction } from "@/lib/server/createSafeAction";
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 const deleteItem = async (data: InputType): Promise<OutputType> => {
     const supabase = await createClient();
@@ -42,6 +43,8 @@ const deleteItem = async (data: InputType): Promise<OutputType> => {
         }
     }
 
+    revalidatePath("/collection");
+    
     return { data: newContent }
 }
 

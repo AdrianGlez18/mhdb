@@ -2,12 +2,12 @@
 
 import { InputType, OutputType } from "./types";
 import { db } from "@/lib/server/db";
-import { WishlistZodSchema} from "./schema";
+import { FollowingZodSchema } from "./schema";
 import { createSafeAction } from "@/lib/server/createSafeAction";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
 
 const create = async (data: InputType): Promise<OutputType> => {
+    console.log("In create")
     const supabase = await createClient();
     const {
         data: { user },
@@ -19,26 +19,26 @@ const create = async (data: InputType): Promise<OutputType> => {
         }
     }
 
-    const userId = user.id;
+    
     const {
-        apiId, title, imageUrl, contentType
+        followerId, followedId
     } = data;
 
-    let newContent;
+    let newFollowing;
 
     try {
-        newContent = await db.wishlistItem.findFirst({
+        const checkFollowing = await db.following.findFirst({
             where: {
-                apiId,
-                userId
+                followerId,
+                followedId
             }
         })
-
-        if (newContent) {
+        if (checkFollowing) {
             return {
-                error: "Content already in wishlist"
+                error: "User already followed"
             }
         }
+
     } catch (error) {
         return {
             error: "Internal database error"
@@ -46,9 +46,9 @@ const create = async (data: InputType): Promise<OutputType> => {
     }
 
     try {
-        newContent = await db.wishlistItem.create({
+        newFollowing = await db.following.create({
             data: {
-                apiId, userId, title, imageUrl, contentType
+                followerId, followedId
             }
         })
     } catch (error) {
@@ -57,9 +57,7 @@ const create = async (data: InputType): Promise<OutputType> => {
         }
     }
 
-    revalidatePath("/collection");
-
-    return { data: newContent }
+    return { data: newFollowing }
 }
 
-export const createWishlistItem = createSafeAction(WishlistZodSchema, create);
+export const createFollowing = createSafeAction(FollowingZodSchema, create);

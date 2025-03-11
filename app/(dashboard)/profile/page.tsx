@@ -2,7 +2,7 @@
 
 /* import { useProfile } from "@/components/context/profile-context"; */
 import ProfileContent from "@/components/profile/profile-content";
-import { findUserProfile, getUserId, getUsername } from "@/lib/server/discover";
+import { findUserProfileByUsername, getUserId, getUsername } from "@/lib/server/discover";
 import { notFound } from "next/navigation";
 
 const ProfilePage = async () => {
@@ -17,7 +17,7 @@ const ProfilePage = async () => {
         return notFound();
     }
 
-    const profile = await findUserProfile(username.data!);
+    const profile = await findUserProfileByUsername(username.data!);
     return <ProfileContent profileType="user" profile={profile} />;
 }
 
