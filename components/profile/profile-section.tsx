@@ -14,6 +14,7 @@ interface DiscoverSectionProps {
 }
 
 export default function ProfileSection({ title, content, contentType }: DiscoverSectionProps) {
+  const sortedContent = content.sort((a, b) => b.userRating - a.userRating);
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
@@ -21,7 +22,7 @@ export default function ProfileSection({ title, content, contentType }: Discover
       </div>
       <ScrollArea className="w-full whitespace-nowrap rounded-lg">
         <div className="flex w-max space-x-4 p-1">
-          {content.map((item) => (
+          {sortedContent.map((item) => (
             <div key={item.id} className="w-[200px]">
               <ProfileCard item={item} />
             </div>

@@ -10,7 +10,9 @@ interface SearchParamProps {
 const DiscoverGamesPage = async ({ searchParams }: SearchParamProps) =>{
   const page = Number(searchParams?.page) || 0;
   const searchQuery = (searchParams?.query as string) || '';
-  const result = await searchGameByTitle(searchQuery);
+  const token = await getTwitchAccessToken();
+  const formatedQuery = searchQuery.split('%20').join(' ');
+  const result = await searchGameByTitle(formatedQuery, token);
   
   return (
     <main className="w-full min-h-screen bg-background p-6">

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
 import Link from "next/link";
 
-const UserButon = () => {
+const UserButton = ({displayUsername}: {displayUsername: boolean}) => {
     const { profile, loading } = useProfile();
     const router = useRouter();
     const supabase = createClient();
@@ -24,11 +24,11 @@ const UserButon = () => {
             <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2">
                     <img src={profileImg} alt="avatar" className="w-8 h-8 rounded-full" />
+                    {displayUsername && <span className="mx-2 text-sm font-medium capitalize">{profile?.profile.username}</span>}
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
             <DropdownMenuItem className="cursor-pointer" asChild><Link href="/profile">Profile</Link></DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer" asChild><Link href="/collection">Collection</Link></DropdownMenuItem>
                 <Separator />
                 <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500">Sign out</DropdownMenuItem>
             </DropdownMenuContent>
@@ -36,4 +36,4 @@ const UserButon = () => {
     )
 }
 
-export default UserButon
+export default UserButton

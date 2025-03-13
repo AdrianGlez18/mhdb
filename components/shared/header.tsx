@@ -6,7 +6,7 @@ import ThemeButton from "./theme-button"
 import { usePathname } from "next/navigation"
 import UserButton from "./user-button"
 
-const headerLinks = [
+export const headerLinks = [
     {
         name: "Movies",
         href: "/discover/movie"
@@ -50,7 +50,7 @@ const Header = () => {
                     ))}
                 </div>
                 <div className="flex gap-4 p-1">
-                    <UserButton />
+                    <UserButton displayUsername={false} />
                 <ThemeButton />
                 </div>
             </div>

@@ -303,7 +303,7 @@ export const getBookList = cache(async (searchQuery: string = '', page: number =
 
 });
 
-export const getTwitchAccessToken = cache(async () => {
+export const getTwitchAccessToken = /* cache( */async () => {
   const clientId = process.env.TWITCH_CLIENT_ID;
   const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 
@@ -321,7 +321,7 @@ export const getTwitchAccessToken = cache(async () => {
 
   const data = await response.json();
   return data.access_token;
-});
+}/* ) */;
 
 export const getTrendingGames = cache(async (token: string) => {
   const response = await fetch('https://api.igdb.com/v4/games', {
@@ -341,8 +341,8 @@ export const getTrendingGames = cache(async (token: string) => {
   return response.json();
 });
 
-export const searchGameByTitle = cache(async (title: string) => {
-  const token = await getTwitchAccessToken();
+export const searchGameByTitle = cache(async (title: string, token: string) => {
+  console.log(token)
 
   if (!title || title == '') {
     const games = getTrendingGames(token);
@@ -360,7 +360,8 @@ export const searchGameByTitle = cache(async (title: string) => {
     body: `
         fields name, summary, cover.*, first_release_date, genres.name, platforms.name;
         search "${title}";
-        limit 10;
+  where category = 0 & version_parent = null;
+  limit 20;
       `,
   });
   return response.json();
