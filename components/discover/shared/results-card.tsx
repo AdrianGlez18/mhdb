@@ -57,10 +57,13 @@ export default function ResultsCard({
 
   const onAddToWishlistList = () => {
     setIsSubmitting(true);
+    const imageUrl = contentType === 'book'
+    ? content.volumeInfo.imageLinks?.thumbnail : contentType === 'game' 
+    ? (content.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${content.cover.image_id}.jpg` : '') :  `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`;
     executeAddWish({
       apiId: content.id.toString(),
       title: (content.title || content.name || ''),
-      imageUrl: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${content.poster_path}`,
+      imageUrl,
       contentType,
     });
     setIsSubmitting(false);

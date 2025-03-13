@@ -22,7 +22,7 @@ export default function ProfileSection({ title, content, contentType }: Discover
       </div>
       <ScrollArea className="w-full whitespace-nowrap rounded-lg">
         <div className="flex w-max space-x-4 p-1">
-          {sortedContent.map((item) => (
+          {sortedContent.slice(0, 10).map((item) => (
             <div key={item.id} className="w-[200px]">
               <ProfileCard item={item} />
             </div>
