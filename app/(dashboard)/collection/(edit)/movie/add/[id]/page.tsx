@@ -30,9 +30,6 @@ export default async function AddMoviePage({ params }: AddMoviePageProps) {
     contentType: "movie"
   }
 
-//todo multiples arrays de fechas
-
-
   return (
     <main className="min-h-screen bg-background px-4 py-6 md:px-6 lg:px-8 w-full">
       <div className="mx-auto max-w-2xl">

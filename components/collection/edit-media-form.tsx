@@ -36,7 +36,7 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [rating, setRating] = useState(defaultValues.userRating || 0)
     //const [selectedTags, setSelectedTags] = useState<string[]>([])
-    const [selectedTags, setSelectedTags] = useState<string>("")
+    const [selectedTags, setSelectedTags] = useState<string>(defaultValues.plainTags || "")
     const dateFixedDefaultValues = {
         ...defaultValues,
         startedWatching: typeof defaultValues.startedWatching === "string" ? new Date(defaultValues.startedWatching) : defaultValues.startedWatching,
@@ -64,8 +64,9 @@ const EditMovieForm = ({ defaultValues, mediaType, action }: EditMovieFormProps)
             toast.success('Content updated successfully!');
             //setRefreshed(true);
         },
-        onError: () => {
-            toast.error("Error while updating content");
+        onError: (error) => {
+            console.log(error);
+            toast.error("Error while updating content: " + error);
         }
     });
 

@@ -13,28 +13,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
-import { useProfile } from "@/components/context/profile-context"
-import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
 import { headerLinks } from "./header"
 import UserButton from "./user-button"
 
 const MobileNavigation = () => {
   const pathname = usePathname()
-  const { profile, loading } = useProfile()
-  const router = useRouter()
-  const supabase = createClient()
-  
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
-
-  if (loading) return null
-
-  const profileImg = profile?.profile?.imageUrl === null 
-    ? `https://ui-avatars.com/api/?name=${profile?.profile.username}` 
-    : profile?.profile.imageUrl
 
   return (
     <div className="w-full block md:hidden">

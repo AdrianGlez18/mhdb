@@ -82,10 +82,12 @@ const create = async (data: InputType): Promise<OutputType> => {
             // Create content views for each watch log entry
             await Promise.all(
                 watchLog.map(async (log) => {
-                    await db.contentView.create({
+                    await db.contentView.create({ 
                         data: {
                             userId,
                             apiId,
+                            contentType,
+                            collectionItemId: newContent.id,
                             startDate: log.startDate,
                             endDate: log.endDate,
                             notes: log.notes || ""

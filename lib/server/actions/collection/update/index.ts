@@ -38,7 +38,8 @@ const update = async (data: InputType): Promise<OutputType> => {
         overview,
         releaseYear,
         startedWatching,
-        completedWatching
+        completedWatching,
+        watchLog
     } = data;
 
     const updated = {
@@ -65,21 +66,69 @@ const update = async (data: InputType): Promise<OutputType> => {
     );
 
     let newContent;
+    let existingItem;
 
     try {
+        // Find the collection item first to get its ID
+        existingItem = await db.collectionItem.findFirst({
+            where: {
+                apiId,
+                userId,
+                contentType
+            }
+        });
+
+        console.log("Existing item:", existingItem);
+        console.log("Filtered data:", filteredData);
+
+        if (!existingItem) {
+            return {
+                error: "Collection item not found"
+            }
+        }
+
+        // Update using the ID which is a unique identifier
         newContent = await db.collectionItem.update({
             where: {
-                unique_content_for_user: {
-                    apiId,
-                    userId,
-                    contentType
-                }
+                id: existingItem.id
             },
-            data: filteredData
+            data: {
+                ...filteredData,
+                // Update the ID because it is not being updated
+                id: existingItem.id
+            }
         })
+
     } catch (error) {
         return {
             error: "Internal database error"
+        }
+    }
+
+    // Update watchLog
+    try {
+        if (watchLog && watchLog.length > 0) {
+            await db.contentView.deleteMany({
+                where: {
+                    collectionItemId: existingItem.id,
+                    userId
+                }
+            });
+            await db.contentView.createMany({
+                data: watchLog.map(log => ({
+                    collectionItemId: existingItem.id,
+                    userId,
+                    apiId,
+                    contentType,
+                    startDate: log.startDate,
+                    endDate: log.endDate,
+                    notes: log.notes || ""
+                }))
+            });
+        }
+    } catch (error) {
+        return {
+            error: "Internal error while updating views"
         }
     }
 

@@ -31,10 +31,7 @@ export default async function AddBookPage({ params }: AddBookPageProps) {
     startedWatching: undefined,
     completedWatching: undefined,
     contentType: "book"
-  } 
-
-//todo multiples arrays de fechas
-
+  }
 
   return (
     <main className="min-h-screen bg-background px-4 py-6 md:px-6 lg:px-8 w-full">

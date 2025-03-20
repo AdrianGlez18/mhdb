@@ -1,9 +1,6 @@
-"use client"
-
-import EditBookForm from "@/components/collection/edit-media-form"
-import { useProfile } from "@/components/context/profile-context"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import EditMovieForm from "@/components/collection/edit-media-form"
+import { getCollectionItemById } from "@/lib/server/discover"
+import { notFound } from "next/navigation"
 
 interface AddBookPageProps {
   params: {
@@ -11,47 +8,35 @@ interface AddBookPageProps {
   }
 }
 
-export default function UpdateBookPage({ params }: AddBookPageProps) {
-  const { id } = params
-  const { profile, loading } = useProfile()
-  const router = useRouter()
-  const [defaultValues, setDefaultValues] = useState<any>();
-//todo fix tags and dates
-//todo remove use profile
-  useEffect(() => {
-    if(!loading) {
-      let book = profile?.collection.find((book: any) => book.apiId === id);
-      if(!book) router.push(`/collection/book/add/${id}`);
-      setDefaultValues({
-        apiId: id,
-        title: book.title,
-        imageUrl: book.imageUrl,
-        author: book.author === null ? undefined : book.author,
-        overview: book.overview === null ? undefined : book.overview,
-        timesWatched: book.timesWatched,
-        isFavorited: book.isFavorited,
-        isOwned: book.isOwned,
-        isWatching: book.isWatching,
-        plainTags: book.tags.join(","),
-        notes: book.notes === null ? undefined : book.notes,
-        userRating: book.userRating === null ? undefined : book.userRating,
-        releaseYear: book.releaseYear === null ? undefined : book.releaseYear,
-        startedWatching: book.startedWatching === null ? undefined : book.startedWatching,
-        completedWatching: book.completedWatching === null ? undefined : book.completedWatching,
-        contentType: book.contentType
-      })
-    }
-  }, [loading, profile])
+export default async function UpdateBookPage({ params }: AddBookPageProps) {
+  const { id } = params;
+  const book = await getCollectionItemById(id, "book");
 
-  if(loading || !defaultValues) {
-    return <div>Loading...</div>
+  if (!book) {
+    return notFound();
   }
-  
-//todo multiples arrays de fechas
+
+  const defaultValues = {
+    apiId: id,
+    title: book.title,
+    imageUrl: book.imageUrl,
+    overview: book.overview === null ? undefined : book.overview,
+    timesWatched: book.timesWatched,
+    isFavorited: book.isFavorited,
+    isOwned: book.isOwned,
+    isWatching: book.isWatching,
+    plainTags: book.tags.join(","),
+    notes: book.notes === null ? undefined : book.notes,
+    userRating: book.userRating === null ? undefined : book.userRating,
+    releaseYear: book.releaseYear === null ? undefined : book.releaseYear,
+    contentType: book.contentType,
+    watchLog: Array.isArray(book.watchLog) ? book.watchLog.map(({ startDate, endDate, ...rest }) => ({ startDate: startDate || undefined, endDate: endDate || undefined, ...rest })) : [],
+  };
+
   return (
     <main className="min-h-screen bg-background px-4 py-6 md:px-6 lg:px-8 w-full">
       <div className="mx-auto max-w-2xl">
-        <EditBookForm action="update" mediaType="book" defaultValues={defaultValues} />
+        <EditMovieForm action="update" mediaType="book" defaultValues={defaultValues} />
       </div>
     </main>
   )

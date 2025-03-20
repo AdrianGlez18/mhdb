@@ -98,6 +98,8 @@ model CollectionItem {
   updatedAt   DateTime    @updatedAt
   tags        String[]
 
+  watchLog ContentView[]
+
   contentType ContentType
 
   userId String
@@ -123,7 +125,8 @@ model WishlistItem {
 
 model Review {
   id            String     @id @default(cuid())
-  isPublic      Boolean
+  isAnnonymous  Boolean
+  isSpoiler     Boolean
   contentType   ContentType
   contentId     String
   rating        Int
@@ -141,12 +144,16 @@ model Review {
 model ContentView {
   id            String     @id @default(cuid())
   apiId         String
+  contentType   ContentType
   startDate     DateTime?
   endDate       DateTime?
   notes         String?
 
   userId        String
   user          PrismaUser @relation(fields: [userId], references: [supabaseAuthId], onDelete: Cascade)
+
+  collectionItemId String
+  collectionItem CollectionItem @relation(fields: [collectionItemId], references: [id], onDelete: Cascade)
 }
 
 enum ContentType {
@@ -155,4 +162,3 @@ enum ContentType {
   book
   game
 }
-//TODO: Tabla visualizaciones. Permite añadir un objeto que indica que una eprsona vio algo. Incluye el id del contenido, del usuario, la fecha de inicio, la final y su rating
