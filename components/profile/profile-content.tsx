@@ -62,6 +62,8 @@ const ProfileContent = async ({ profileType, profile }: { profileType: ProfileTy
             }
         });
 
+        console.log(profile)
+
         return (
             <main className="min-h-screen space-y-8 px-4 py-6 md:px-6 lg:px-8">
                 <div className="mx-auto max-w-6xl space-y-8">
@@ -80,6 +82,12 @@ const ProfileContent = async ({ profileType, profile }: { profileType: ProfileTy
                     {favoriteSeries.length > 0 && <ProfileSection title="Favorite Series" content={favoriteSeries} contentType="series" />}
                     {favoriteBooks.length > 0 && <ProfileSection title="Favorite Books" content={favoriteBooks} contentType="book" />}
                     {favoriteGames.length > 0 && <ProfileSection title="Favorite Games" content={favoriteGames} contentType="game" />}
+                    {profile.reviews.map((review: any) => (
+                        <div key={review.id}>
+                            <h3 className="text-lg font-semibold">{review.title}</h3>
+                            <p className="text-muted-foreground">{review.body}</p>
+                        </div>
+                    ))}
                 </div>
             </main>
         )

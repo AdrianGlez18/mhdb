@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 import { Star, StarHalf } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
+import { createReview } from '@/lib/server/actions/review/create';
+import { useAction } from '@/hooks/useAction';
 
 // Define the schema for the review form
 const ReviewFormSchema = z.object({
@@ -28,9 +30,10 @@ interface ReviewFormProps {
   contentId: string;
   userId: string;
   contentType: 'movie' | 'series' | 'book' | 'game';
+  setIsReviewDialogOpen: (open: boolean) => void;
 }
 
-const ReviewForm: React.FC<ReviewFormProps> = ({ contentId, userId, contentType }) => {
+const ReviewForm: React.FC<ReviewFormProps> = ({ contentId, userId, contentType, setIsReviewDialogOpen }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<ReviewFormData>({
     resolver: zodResolver(ReviewFormSchema),
@@ -45,12 +48,20 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ contentId, userId, contentType 
     },
   });
 
+  const {execute } = useAction(createReview, {
+    onSuccess: (data) => {
+      toast.success("Review submitted successfully!");
+    },
+    onError: (error) => {
+      toast.error("Error while submitting review");
+    },
+  });
+
   const onSubmit = async (data: ReviewFormData) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      console.log('Submitting review:', data);
-      toast.success('Review submitted successfully!');
+      await execute(data);
+      setIsReviewDialogOpen(false);
     } catch (error) {
       toast.error('Failed to submit review.');
     } finally {

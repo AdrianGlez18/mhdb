@@ -220,6 +220,8 @@ export const findUserProfileByUsername = cache(async (username: string) => {
     };
   }
 
+  console.log("Reviews: ", profile.user.reviews);
+
   if (profile && profile.isPublic) {
     const favoriteItems = profile.user.collection.filter(
       (item) => item.isFavorited
@@ -232,6 +234,7 @@ export const findUserProfileByUsername = cache(async (username: string) => {
       collection: favoriteItems,
       following: profile.following,
       followers: profile.followers,
+      reviews: profile.user.reviews,
     };
   } else if (profile && !profile.isPublic) {
     return {

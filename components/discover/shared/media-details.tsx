@@ -15,6 +15,7 @@ import { useEffect, useState } from "react"
 import { useProfile } from "@/components/context/profile-context"
 import TrailerButton from "./trailer-button"
 import ReviewForm from "@/components/review/ReviewForm"
+import ReviewSection from "@/components/review/ReviewSection"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 //import MovieRecommendations from "@/components/movie-recommendations"
 
@@ -180,7 +181,8 @@ export default function MediaDetails({ content }: { content: any }) {
                                         <ReviewForm 
                                             contentId={media.id.toString()} 
                                             userId={profile.id} 
-                                            contentType={content.media_type === 'movie' ? 'movie' : 'series'} 
+                                            contentType={content.media_type === 'movie' ? 'movie' : 'series'}
+                                            setIsReviewDialogOpen={setIsReviewDialogOpen}
                                         />
                                     )}
                                 </DialogContent>
@@ -233,7 +235,7 @@ export default function MediaDetails({ content }: { content: any }) {
 
                         <MovieCrew crew={media.crew} />
 
-                        <Separator />
+                        <ReviewSection contentId={media.id.toString()} contentType={content.media_type === 'movie' ? 'movie' : 'series'} />
 
                         {/* <MovieRecommendations movies={recommendations} /> */}
                     </div>
