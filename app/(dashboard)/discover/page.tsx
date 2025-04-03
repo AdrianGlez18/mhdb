@@ -3,6 +3,8 @@ import DiscoverSection from "@/components/discover/shared/discover-section"
 import DiscoverBookSection from "@/components/discover/book/discover-book-section"
 import { getBookList, getTMDBTrailer, getTMDBTrendingList, getTrendingGames, getTwitchAccessToken } from "@/lib/server/discover"
 import DiscoverGameSection from "@/components/discover/game/discover-game-section"
+import { Loading } from "@/components/shared/loading"
+import { Suspense } from "react"
 
 export default async function Home() {
 
@@ -47,41 +49,43 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen space-y-8 px-4 py-6 md:px-6 lg:px-8 overflow-auto w-full">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <Hero trailer={trailer} />
+    <Suspense fallback={<Loading />}>
+      <main className="min-h-screen space-y-8 px-4 py-6 md:px-6 lg:px-8 overflow-auto w-full">
+        <div className="mx-auto max-w-7xl space-y-8">
+          <Hero trailer={trailer} />
 
-        {/* <DiscoverSection
-          title="Trending Movies"
-          content={movieList.results}
-          viewAllHref="/discover/movie"
-        />
+          <DiscoverSection
+            title="Trending Movies"
+            content={movieList.results}
+            viewAllHref="/discover/movie"
+          />
 
-        <DiscoverSection
-          title="Trending Series"
-          content={seriesList.results}
-          viewAllHref="/discover/series"
-        />
+          <DiscoverSection
+            title="Trending Series"
+            content={seriesList.results}
+            viewAllHref="/discover/series"
+          />
 
-        <DiscoverBookSection
-          title="Some interesting books"
-          content={bookList.items}
-          viewAllHref="/discover/book"
-        />
+          <DiscoverBookSection
+            title="Some interesting books"
+            content={bookList.items}
+            viewAllHref="/discover/book"
+          />
 
-        <DiscoverGameSection
-          title="Top Rated Games"
-          content={gameList}
-          viewAllHref="/discover/game"
-        /> */}
+          <DiscoverGameSection
+            title="Top Rated Games"
+            content={gameList}
+            viewAllHref="/discover/game"
+          />
 
-        {/* <DiscoverSection
-          title="Recommended for You"
-          content={recommendedMovies}
-          viewAllHref="/movies/recommended"
-        />  */}
-      </div>
-    </main>
+          {/* <DiscoverSection
+        title="Recommended for You"
+        content={recommendedMovies}
+        viewAllHref="/movies/recommended"
+      />  */}
+        </div>
+      </main>
+    </Suspense >
   )
 }
 
