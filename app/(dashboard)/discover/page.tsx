@@ -51,7 +51,7 @@ export default async function Home() {
       <div className="mx-auto max-w-7xl space-y-8">
         <Hero trailer={trailer} />
 
-        <DiscoverSection
+        {/* <DiscoverSection
           title="Trending Movies"
           content={movieList.results}
           viewAllHref="/discover/movie"
@@ -73,7 +73,7 @@ export default async function Home() {
           title="Top Rated Games"
           content={gameList}
           viewAllHref="/discover/game"
-        />
+        /> */}
 
         {/* <DiscoverSection
           title="Recommended for You"
