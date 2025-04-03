@@ -182,7 +182,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ contentId, contentType }) => {
                 <div className="space-y-1 flex-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">
+                      <h3 className="font-semibold capitalize">
                         {review.isAnnonymous ? 'Anonymous' : review.user?.profile?.username || 'Unknown User'}
                       </h3>
                       <div className="flex items-center">
