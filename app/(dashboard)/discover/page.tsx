@@ -68,11 +68,11 @@ export default async function Home() {
           viewAllHref="/discover/book"
         />
 
-        <DiscoverGameSection
+        {/* <DiscoverGameSection
           title="Top Rated Games"
           content={gameList}
           viewAllHref="/discover/game"
-        />
+        /> */}
 
         {/* <DiscoverSection
         title="Recommended for You"
