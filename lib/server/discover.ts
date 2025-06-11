@@ -441,31 +441,71 @@ export const getTrendingGames = cache(async (token: string) => {
   return response.json();
 });
 
-export const searchGameByTitle = cache(async (title: string, token: string) => {
-  console.log(token);
+export const searchGameByTitle = async (title: string, token: string) => {
+  console.log('Token:', token);
+  console.log('Searching for:', title);
 
-  if (!title || title == "") {
+  if (!title || title.trim() === "") {
     const games = getTrendingGames(token);
     return games;
   }
 
-  const response = await fetch("https://api.igdb.com/v4/games", {
-    method: "POST",
-    headers: {
-      "Client-ID": process.env.TWITCH_CLIENT_ID!,
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: `
-        fields name, summary, cover.*, first_release_date, genres.name, platforms.name;
-        search "${title}";
-  where category = 0 & version_parent = null;
-  limit 20;
-      `,
-  });
-  return response.json();
-});
+  // Sanitize the search term
+  const sanitizedTitle = title.replace(/['"\\]/g, '\\$&').trim();
+  console.log('Searching for:', sanitizedTitle);
+
+  const searchQuery = `
+    fields 
+      name, 
+      summary, 
+      cover.*, 
+      first_release_date, 
+      genres.name, 
+      platforms.name,
+      rating,
+      aggregated_rating;
+    search "${sanitizedTitle}";
+    
+    limit 50;
+  `;
+
+  try {
+    const response = await fetch("https://api.igdb.com/v4/games", {
+      method: "POST",
+      headers: {
+        "Client-ID": process.env.TWITCH_CLIENT_ID!,
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json",
+        "Content-Type": "text/plain",
+      },
+      body: searchQuery,
+      cache: 'no-store'  // Ensure fresh results
+      
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('IGDB Error:', errorText);
+      throw new Error(`IGDB API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    // Sort results by relevance and rating
+    const sortedData = data.sort((a: any, b: any) => {
+      const aRating = a.rating || a.aggregated_rating || 0;
+      const bRating = b.rating || b.aggregated_rating || 0;
+      return bRating - aRating;
+    });
+
+    console.log('IGDB Response:', sortedData);
+    return sortedData;
+
+  } catch (error) {
+    console.error('Error searching games:', error);
+    throw error;
+  }
+};
 
 export const getGameById = cache(async (id: number) => {
   const token = await getTwitchAccessToken();
