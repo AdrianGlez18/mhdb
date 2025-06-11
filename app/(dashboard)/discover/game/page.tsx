@@ -8,29 +8,30 @@ interface SearchParamProps {
 }
 
 const DiscoverGamesPage = async ({ searchParams }: SearchParamProps) =>{
-  const page = Number(searchParams?.page) || 0;
+  /*const page = Number(searchParams?.page) || 0;
   const searchQuery = (searchParams?.query as string) || '';
   const token = await getTwitchAccessToken();
   const formatedQuery = searchQuery.split('%20').join(' ');
   const result = await searchGameByTitle(formatedQuery, token);
   
-  return (
+   return (
     <main className="w-full min-h-screen bg-background p-6">
       <Search contentType="game" />
       <SearchResults contentType="game" page={page} content={result} totalPages={10} />
     </main>
-  )
-  /* return (
+  ) */
+
+  return (
     <main className="w-full min-h-screen bg-background p-6">
       <PageUnderDevelopment
-        title="Discover Games Page is under construction"
+        title="Discover Games Page is under maintenance"
         message="We're creating some cool features to interact and store games. Stay tuned!"
         design="[1%]"
         development="1/4"
         testing="[1%]"
       />
     </main>
-  ) */
+  )
 }
 
 export default DiscoverGamesPage;

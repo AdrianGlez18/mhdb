@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { formatDistanceToNow } from 'date-fns';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import ReviewContainer from './ReviewContainer';
 
 // Define the review type
 interface Review {
@@ -169,96 +170,12 @@ const ReviewList: React.FC<ReviewListProps> = ({ contentId, contentType }) => {
       ) : (
         <div className="space-y-4">
           {sortedReviews.map((review) => (
-            <Card key={review.id} className="w-full transition-all hover:shadow-md">
-              <CardHeader className="flex flex-row items-start gap-4 pb-2">
-                <Avatar className="h-12 w-12">
-                  {!review.isAnnonymous && review.user?.profile?.imageUrl ? (
-                    <AvatarImage src={review.user.profile.imageUrl} alt={review.user.profile.username} />
-                  ) : null}
-                  <AvatarFallback>
-                    {review.isAnnonymous ? 'A' : review.user?.profile?.username?.[0] || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1 flex-1">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold capitalize">
-                        {review.isAnnonymous ? 'Anonymous' : review.user?.profile?.username || 'Unknown User'}
-                      </h3>
-                      <div className="flex items-center">
-                        {renderStars(review.rating / 2)}
-                        <span className="ml-2 text-sm font-medium">{review.rating.toFixed(1)}/10</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center text-muted-foreground text-xs">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
-                    </div>
-                  </div>
-                  {review.isSpoiler && (
-                    <Badge variant="destructive" className="text-xs">Spoiler</Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                {review.isSpoiler && !showSpoilers ? (
-                  <div className="p-4 bg-muted rounded-md">
-                    <p className="text-center text-muted-foreground">
-                      This review contains spoilers. 
-                      <Button 
-                        variant="link" 
-                        onClick={() => setShowSpoilers(true)}
-                        className="p-0 h-auto ml-1"
-                      >
-                        Show anyway
-                      </Button>
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-sm leading-relaxed">{review.body}</p>
-                )}
-              </CardContent>
-              <CardFooter className="flex justify-between pt-0">
-                <div className="flex gap-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <ThumbsUp className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Helpful</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <ThumbsDown className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Not Helpful</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Flag className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Report</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </CardFooter>
-            </Card>
+            <ReviewContainer
+              key={review.id}
+              review={review}
+              showSpoilers={showSpoilers}
+              setShowSpoilers={setShowSpoilers}
+            />
           ))}
         </div>
       )}

@@ -75,4 +75,34 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  
+}
+
+.icon-half {
+  clip-path: inset(0 50% 0 0);
+}
+
+.half-star-container {
+position: relative;
+  width: 1rem;
+  height: 1rem;
+}
+
+.filled-half-star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1rem;
+  height: 1rem;
+  fill: #facc15;
+  clip-path: inset(0 50% 0 0); /* Hides the right half */
+}
+
+.outlined-half-star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1rem;
+  height: 1rem;
+  color: #facc15
 }

@@ -4,6 +4,10 @@ import ProfileHeader from "./profile-header";
 import ProfileSection from "./profile-section";
 import { getIfFollowing, getUserId, getUserProfile } from "@/lib/server/discover";
 import { redirect } from "next/navigation";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { ThumbsUp, ThumbsDown, Flag } from "lucide-react";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardFooter } from "../ui/card";
 
 type ProfileType = "user" | "external"
 
@@ -84,8 +88,60 @@ const ProfileContent = async ({ profileType, profile }: { profileType: ProfileTy
                     {favoriteGames.length > 0 && <ProfileSection title="Favorite Games" content={favoriteGames} contentType="game" />}
                     {profile.reviews.map((review: any) => (
                         <div key={review.id}>
-                            <h3 className="text-lg font-semibold">{review.title}</h3>
-                            <p className="text-muted-foreground">{review.body}</p>
+                            <Card key={review.id} className="w-full transition-all hover:shadow-md">
+              <CardContent>
+                {review.isSpoiler  ? (
+                  <div className="p-4 bg-muted rounded-md">
+                    <p>{review.contentId} {review.contentType}</p>
+                    <p className="text-center text-muted-foreground">
+                      This review contains spoilers. 
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm leading-relaxed">{review.body}</p>
+                )}
+              </CardContent>
+              <CardFooter className="flex justify-between pt-0">
+                <div className="flex gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <ThumbsUp className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Helpful</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <ThumbsDown className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Not Helpful</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Flag className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Report</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardFooter>
+            </Card>
                         </div>
                     ))}
                 </div>
